@@ -27,9 +27,11 @@ public class DatabaseConnection {
             e.printStackTrace();
         }
     }
+
     private static DataSource createDataSource() {
+        String password = Secret.Password();
         HikariDataSource ds = new HikariDataSource();
-        ds.setJdbcUrl("jdbc:mysql://address=(host=mysql-eebfafa-library1.j.aivencloud.com)(port=27035)(user=avnadmin)(password=)(ssl-mode=REQUIRED)/defaultdb");
+        ds.setJdbcUrl(String.format("jdbc:mysql://address=(host=mysql-eebfafa-library1.j.aivencloud.com)(port=27035)(user=avnadmin)(password=%s)(ssl-mode=REQUIRED)/defaultdb", password));
         return ds;
     }
 }
