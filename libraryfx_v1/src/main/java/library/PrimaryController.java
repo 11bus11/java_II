@@ -1,6 +1,7 @@
 package library;
 
 import java.io.IOException;
+
 import javafx.fxml.FXML;
 
 public class PrimaryController {
@@ -10,3 +11,4 @@ public class PrimaryController {
         App.setRoot("secondary");
     }
 }
+
