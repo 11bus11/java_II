@@ -21,9 +21,9 @@ public class LoginController {
 
     @FXML
     void logIn(ActionEvent event) {
-String username = usernameField.getText();
-String password = passwordField.getText();
-if(username.equals("nicagu") && password.equals("12345")){
+String usernameInput = username.getText();
+String passwordInput = password.getText();
+if(usernameInput.equals("nicagu") && passwordInput.equals("12345")){
     System.out.println("Login done");
 } else{
     System.out.println("Login Error");
