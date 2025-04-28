@@ -22,14 +22,14 @@ public class LoginController {
     private Label wrongLogin;
 
     @FXML
-    void logIn(ActionEvent event) {
-String usernameInput = username.getText();
-String passwordInput = password.getText();
-if(usernameInput.equals("nicagu") && passwordInput.equals("12345")){
-    System.out.println("Login done");
-} else{
-    System.out.println("Login Error");
-}
+    private void logIn(ActionEvent event) {
+        String usernameInput = username.getText();
+        String passwordInput = password.getText();
+        if(usernameInput.equals("nicagu") && passwordInput.equals("12345")){
+            System.out.println("Login done");
+        } else{
+            System.out.println("Login Error");
+        }
     }
 
 }
