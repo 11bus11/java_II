@@ -20,7 +20,13 @@ public class DatabaseConnection {
             // CRUD
             System.out.println("yup yup");
             // select
+            PreparedStatement ps = connection.prepareStatement("select * from User where FirstName = ?");
+            ps.setString(1, "Emma");
 
+            ResultSet resultSet = ps.executeQuery();
+            while (resultSet.next()) {
+                System.out.println(resultSet.getInt("UserID") + " - " + resultSet.getString("LastName"));
+            }
             
             
         } catch (SQLException e) {
