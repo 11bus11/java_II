@@ -8,9 +8,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 import java.util.*;
-import java.util.ListIterator;
 
 public class LoginController {
+
 
     @FXML
     private Button button;
@@ -24,14 +24,19 @@ public class LoginController {
     @FXML
     private Label wrongLogin;
 
+    
+    ArrayList <User> arrayUsers = User.createUsers();
+
     @FXML
     private void logIn(ActionEvent event) {
+        
+        System.out.println(arrayUsers + "yeyeye");
         String usernameInput = username.getText();
         String passwordInput = password.getText();
 
-        
+        String correctPassword = getPassword(arrayUsers, usernameInput);
 
-        if(usernameInput.equals("nicagu") && passwordInput.equals("12345")){
+        if(passwordInput.equals(correctPassword)){
             System.out.println("Login done");
         } else{
             System.out.println("Login Error");
@@ -41,20 +46,19 @@ public class LoginController {
     }
 
     public static String getPassword(ArrayList <User> users, String username) {
-        String result = "";
+        String result = "nope";
         //int i = 0;
         User tester;
         ListIterator<User> it = users.listIterator(users.size());
         while (it.hasPrevious()) {
-            System.out.println(it.previous());
             tester = it.previous();
+            System.out.println(tester.email + " " + tester.password);
             if (tester.email.equals(username)) {
-                result = tester.email;
+                result = tester.password;
+                break;
             }
         }
         System.out.println(result);
-        
-
         return result;
     }
 

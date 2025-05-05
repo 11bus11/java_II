@@ -32,12 +32,10 @@ public class User {
         this.password = password;
         this.userType = userType;
     }
-
     public static ArrayList<User> createUsers() {
-
         DataSource dataSource = createDataSource();
             ArrayList <User> arrayUsers = new ArrayList<User>();
-
+            
             try (Connection connection = dataSource.getConnection()) {
                 ResultSet resultSet = connection.createStatement().executeQuery("select * from User");
                 while(resultSet.next()){
@@ -55,6 +53,8 @@ public class User {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+
+            
             return arrayUsers;
         }
 
