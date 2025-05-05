@@ -45,6 +45,8 @@ public class App extends Application {
     public static void main(String[] args) {
         ArrayList <User> arrayUsers = User.createUsers();
         System.err.println(arrayUsers);
+        LoginController.getPassword(arrayUsers, "emil.nilsson@test.se");
+
         launch();
     }
 
