@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.DriverManager;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
@@ -43,6 +44,7 @@ public class App extends Application {
 
     public static void main(String[] args) {
         DataSource dataSource = createDataSource();
+        ArrayList <User> arrayUsers = new ArrayList<User>();
 
         try (Connection connection = dataSource.getConnection()) {
             ResultSet resultSet = connection.createStatement().executeQuery("select * from User");
@@ -54,7 +56,8 @@ public class App extends Application {
                 String password = resultSet.getString("Password");
                 String userType = resultSet.getString("UserType");
 		    	User user = new User(userID, firstName, lastName, email, password, userType);
-                System.out.println(user.firstName);
+                arrayUsers.add(user);
+                System.out.println(arrayUsers);
 		    }
             
             
@@ -73,5 +76,3 @@ public class App extends Application {
         return ds;
     }
 }
-    
-//Hejj

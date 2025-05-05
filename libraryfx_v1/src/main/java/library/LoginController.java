@@ -7,18 +7,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.DriverManager;
-import java.sql.Statement;
-
-import javax.sql.DataSource;
-
-import com.zaxxer.hikari.HikariDataSource;
-
 public class LoginController {
 
     @FXML
