@@ -1,5 +1,20 @@
 package library;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.DriverManager;
+import java.sql.Statement;
+
+import javax.sql.DataSource;
+
+import com.zaxxer.hikari.HikariDataSource;
+
 public class User {
     int userID;
     String firstName;
@@ -17,7 +32,6 @@ public class User {
         this.userType = userType;
     }
 
-    public void createUser() {
-        
-    }
+    
 }
+

@@ -45,18 +45,18 @@ public class App extends Application {
         DataSource dataSource = createDataSource();
 
         try (Connection connection = dataSource.getConnection()) {
-            System.out.println("connection.isValid(0) = " + connection.isValid(0));
-            // CRUD
-            System.out.println("yup yup");
-            // select
-            PreparedStatement ps = connection.prepareStatement("select * from User where FirstName = ?");
-            ps.setString(1, "Emma");
-
-            ResultSet resultSet = ps.executeQuery();
-            while (resultSet.next()) {
-                System.out.println(resultSet.getInt("UserID") + " - " + resultSet.getString("LastName"));
-                
-            }
+            ResultSet resultSet = connection.createStatement().executeQuery("select * from User");
+		    while(resultSet.next()){
+			    int userID = resultSet.getInt("UserID");
+    			String firstName = resultSet.getString("FirstName");
+                String lastName = resultSet.getString("LastName");
+                String email = resultSet.getString("Email");
+                String password = resultSet.getString("Password");
+                String userType = resultSet.getString("UserType");
+		    	User user = new User(userID, firstName, lastName, email, password, userType);
+                System.out.println(user.firstName);
+		    }
+            
             
             
         } catch (SQLException e) {
@@ -64,6 +64,7 @@ public class App extends Application {
         }
         launch();
     }
+
 
     private static DataSource createDataSource() {
         String password = Secret.Password();
