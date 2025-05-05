@@ -7,6 +7,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
+import java.util.ArrayList;
+
 public class LoginController {
 
     @FXML
@@ -26,6 +28,8 @@ public class LoginController {
         String usernameInput = username.getText();
         String passwordInput = password.getText();
 
+        for (int i = 0, i < (arrayUsers.length))
+
         if(usernameInput.equals("nicagu") && passwordInput.equals("12345")){
             System.out.println("Login done");
         } else{
@@ -33,6 +37,13 @@ public class LoginController {
         }
 
         
+    }
+
+    public static String getPassword(ArrayList <User> users ) {
+        String result;
+        
+
+        return result;
     }
 
 }

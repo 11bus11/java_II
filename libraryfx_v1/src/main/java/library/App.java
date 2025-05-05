@@ -43,28 +43,8 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-        DataSource dataSource = createDataSource();
-        ArrayList <User> arrayUsers = new ArrayList<User>();
-
-        try (Connection connection = dataSource.getConnection()) {
-            ResultSet resultSet = connection.createStatement().executeQuery("select * from User");
-		    while(resultSet.next()){
-			    int userID = resultSet.getInt("UserID");
-    			String firstName = resultSet.getString("FirstName");
-                String lastName = resultSet.getString("LastName");
-                String email = resultSet.getString("Email");
-                String password = resultSet.getString("Password");
-                String userType = resultSet.getString("UserType");
-		    	User user = new User(userID, firstName, lastName, email, password, userType);
-                arrayUsers.add(user);
-                System.out.println(arrayUsers);
-		    }
-            
-            
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        ArrayList <User> arrayUsers = User.createUsers();
+        System.err.println(arrayUsers);
         launch();
     }
 
