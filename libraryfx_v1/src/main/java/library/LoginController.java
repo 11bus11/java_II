@@ -25,11 +25,24 @@ public class LoginController {
     private void logIn(ActionEvent event) {
         String usernameInput = username.getText();
         String passwordInput = password.getText();
+
         if(usernameInput.equals("nicagu") && passwordInput.equals("12345")){
             System.out.println("Login done");
         } else{
             System.out.println("Login Error");
         }
+
+        
     }
 
+}
+
+PreparedStatement ps = connection.prepareStatement("select Password from User where FirstName = ? and LastName = ?");
+ps.setString(1, "Emma");
+ps.setString(2, "Smith");
+
+ResultSet resultSet = ps.executeQuery();
+while (resultSet.next()) {
+    
+System.out.println(resultSet.getInt("UserID") + " - " + resultSet.getString("LastName"));
 }
