@@ -1,9 +1,12 @@
 module library {
-    requires javafx.controls; //drar in graphics för modulen
+    requires javafx.controls;
     requires javafx.fxml;
+    requires transitive javafx.graphics;
+    requires java.sql;
+    requires com.zaxxer.hikari;
 
-    requires transitive javafx.graphics; //exporterar modul vidare
-
-    opens library to javafx.fxml;
+    opens library to javafx.fxml, java.sql, com.zaxxer.hikari, javafx.graphics;
+   
     exports library;
 }
+
