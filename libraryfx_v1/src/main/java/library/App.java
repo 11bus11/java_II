@@ -24,6 +24,8 @@ import com.zaxxer.hikari.HikariDataSource;
  */
 public class App extends Application {
 
+    public static User isLoggedIn = null;
+
     private static Scene scene;
 
     @Override
@@ -57,5 +59,9 @@ public class App extends Application {
         HikariDataSource ds = new HikariDataSource();
         ds.setJdbcUrl(String.format("jdbc:mysql://address=(host=mysql-eebfafa-library1.j.aivencloud.com)(port=27035)(user=avnadmin)(password=%s)(ssl-mode=REQUIRED)/defaultdb", password));
         return ds;
+    }
+
+    public static User isLoggedIn() {
+
     }
 }
