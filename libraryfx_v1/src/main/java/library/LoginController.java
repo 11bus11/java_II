@@ -26,18 +26,20 @@ public class LoginController {
 
     
     ArrayList <User> arrayUsers = User.createUsers();
+   
 
     @FXML
     private void logIn(ActionEvent event) {
         
-        System.out.println(arrayUsers + "yeyeye");
+        System.out.println(arrayUsers);
         String usernameInput = username.getText();
         String passwordInput = password.getText();
 
-        String correctPassword = getPassword(arrayUsers, usernameInput);
+        String correctPassword = getPassword(arrayUsers, usernameInput).email;
 
         if(passwordInput.equals(correctPassword)){
             System.out.println("Login done");
+            isLoggedIn = 
         } else{
             System.out.println("Login Error");
         }
@@ -45,7 +47,7 @@ public class LoginController {
         
     }
 
-    public static String getPassword(ArrayList <User> users, String username) {
+    public static UserPassword(ArrayList <User> users, String username) {
         String result = "nope";
         //int i = 0;
         User tester;
