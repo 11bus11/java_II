@@ -8,32 +8,21 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="918.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Home">
    <left>
       <VBox prefHeight="400.0" prefWidth="142.0" style="-fx-background-color: #0A2F52;" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" prefHeight="79.0" prefWidth="142.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2px 0px;" text="Home" textFill="WHITE">
+            <Button fx:id="btnHome" mnemonicParsing="false" onMouseClicked="#goToHome" prefHeight="174.0" prefWidth="142.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2px 0px;" text="Home" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="82.0" prefWidth="142.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2px 0px;" text="Search" textFill="WHITE">
+            <Button fx:id="btnSearch" mnemonicParsing="false" onMouseClicked="#goToSearch" prefHeight="165.0" prefWidth="142.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2px 0px;" text="Search" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="79.0" prefWidth="142.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2px 0px;" text="Return loan" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Button>
-            <Button mnemonicParsing="false" prefHeight="83.0" prefWidth="142.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2px 0px;" text="My library account" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Button>
-            <Button mnemonicParsing="false" prefHeight="76.0" prefWidth="142.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2px 0px;" text="Loan" textFill="WHITE">
+            <Button fx:id="btnMyLibraryAccount" mnemonicParsing="false" onMouseClicked="#goToMyLibraryAccount" prefHeight="193.0" prefWidth="142.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2px 0px;" text="My library account" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
@@ -44,7 +33,7 @@
    <center>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <ImageView fitHeight="193.0" fitWidth="286.0" layoutX="82.0" layoutY="93.0">
+            <ImageView fitHeight="336.0" fitWidth="493.0" layoutX="150.0" layoutY="118.0">
                <image>
                   <Image url="@../../Pictures/LTU_eng_-blue_RGB4-01.png" />
                </image>
