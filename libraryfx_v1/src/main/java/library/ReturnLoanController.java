@@ -1,27 +1,28 @@
 package library;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 
-public class CRUD {
+public class ReturnLoanController {
 
     @FXML
     private Button btnDelete;
 
     @FXML
+    private Button btnHome;
+
+    @FXML
     private Button btnInsert;
 
     @FXML
-    private Button btnReturn;
+    private Button btnMyLoans;
 
     @FXML
-    private Button btnUpdate;
+    private Button btnReturnLoan;
 
     @FXML
     private TableColumn<?, ?> colAuthor;
@@ -33,7 +34,7 @@ public class CRUD {
     private TableColumn<?, ?> colISBN;
 
     @FXML
-    private TableColumn<?, ?> colPlacement;
+    private TableColumn<?, ?> colStatus;
 
     @FXML
     private TableColumn<?, ?> colTitle;
@@ -42,34 +43,23 @@ public class CRUD {
     private TableColumn<?, ?> colWorkType;
 
     @FXML
-    private TextField tfAuthor;
-
-    @FXML
     private TextField tfBarcode;
-
-    @FXML
-    private TextField tfISBN;
-
-    @FXML
-    private TextField tfPlacement;
-
-    @FXML
-    private TextField tfTitle;
-
-    @FXML
-    private Label tfType;
-
-    @FXML
-    private Label tfType1;
-
-    @FXML
-    private TextField tfWorkType;
 
     @FXML
     private TableView<?> tvWork;
 
     @FXML
-    void goToStaff(MouseEvent event) {
+    void goToHome(MouseEvent event) {
+
+    }
+
+    @FXML
+    void goToLoan(MouseEvent event) {
+
+    }
+
+    @FXML
+    void goToMyLoans(MouseEvent event) {
 
     }
 
@@ -79,16 +69,13 @@ public class CRUD {
     }
 
     @FXML
-    void handleInsert(ActionEvent event) {
+    void handleInsert(MouseEvent event) {
 
     }
 
     @FXML
-    void handleUpdate(MouseEvent event) {
+    void handleReturnLoan(MouseEvent event) {
 
     }
 
 }
-
-
-
