@@ -6,6 +6,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import java.io.IOException;
+
+
 
 import java.util.*;
 
@@ -35,11 +38,12 @@ public class LoginController {
         String usernameInput = username.getText();
         String passwordInput = password.getText();
 
-        String correctPassword = getPassword(arrayUsers, usernameInput).email;
+        User loginTry = getPassword(arrayUsers, usernameInput);
 
-        if(passwordInput.equals(correctPassword)){
+        if(passwordInput.equals(loginTry.password)){
             System.out.println("Login done");
-            isLoggedIn = 
+            App.isLoggedIn = loginTry;
+            actionLoggedIn();
         } else{
             System.out.println("Login Error");
         }
@@ -47,8 +51,8 @@ public class LoginController {
         
     }
 
-    public static UserPassword(ArrayList <User> users, String username) {
-        String result = "nope";
+    public static User getPassword(ArrayList <User> users, String username) {
+        User result = null;
         //int i = 0;
         User tester;
         ListIterator<User> it = users.listIterator(users.size());
@@ -56,12 +60,26 @@ public class LoginController {
             tester = it.previous();
             System.out.println(tester.email + " " + tester.password);
             if (tester.email.equals(username)) {
-                result = tester.password;
+                result = tester;
                 break;
             }
         }
         System.out.println(result);
         return result;
+    }
+
+    @FXML
+    private static void switchToSecondary() throws IOException {
+        App.setRoot("secondary");
+    }
+
+    private static void actionLoggedIn() {
+        try {
+            switchToSecondary();
+        } catch (Exception e) {
+            System.out.println("error dude");
+        }
+        
     }
 
 }
