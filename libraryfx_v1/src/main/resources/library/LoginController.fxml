@@ -18,7 +18,7 @@
    <top>
       <ImageView fitHeight="167.0" fitWidth="292.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
          <image>
-            <Image url="@../../../../../Pictures/LTU_eng_-blue_RGB4-01.png" />
+            <Image url="@../images/LTU.png" />
          </image>
       </ImageView>
    </top>
