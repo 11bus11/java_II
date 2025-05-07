@@ -1,5 +1,7 @@
 package library;
 
+import java.io.IOException;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
@@ -16,17 +18,20 @@ public class Home {
     private Button btnSearch;
 
     @FXML
-    void goToHome(MouseEvent event) {
+    void goToHome(MouseEvent event) throws IOException {
+        App.setRoot("Home");
 
     }
 
     @FXML
-    void goToMyLibraryAccount(MouseEvent event) {
+    void goToMyLibraryAccount(MouseEvent event) throws IOException {
+        App.setRoot("MyLibraryAccount");
 
     }
 
     @FXML
-    void goToSearch(MouseEvent event) {
+    void goToSearch(MouseEvent event) throws IOException {
+        App.setRoot("SearchController");
 
     }
 
