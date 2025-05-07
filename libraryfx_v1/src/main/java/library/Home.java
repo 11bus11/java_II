@@ -25,8 +25,11 @@ public class Home {
 
     @FXML
     void goToMyLibraryAccount(MouseEvent event) throws IOException {
-        App.setRoot("MyLibraryAccount");
-
+        if (App.isLoggedIn != null) {
+            App.setRoot("MyLibraryAccount");
+        } else {
+            App.setRoot("LoginController");
+        }
     }
 
     @FXML

@@ -68,7 +68,5 @@ public class App extends Application {
         return ds;
     }
 
-    public static User isLoggedIn() {
-
-    }
+    
 }
