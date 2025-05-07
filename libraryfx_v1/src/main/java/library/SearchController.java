@@ -1,6 +1,8 @@
 
 package library;
 
+import java.io.IOException;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -37,7 +39,8 @@ public class SearchController {
     private TextField tfSearch;
 
     @FXML
-    void goToHome(MouseEvent event) {
+  void goToHome(MouseEvent event) throws IOException {
+        App.setRoot("Home");
 
     }
 
