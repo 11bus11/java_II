@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="918.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Home">
+   <left>
+      <VBox prefHeight="400.0" prefWidth="142.0" style="-fx-background-color: #0A2F52;" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="btnHome" mnemonicParsing="false" onMouseClicked="#goToHome" prefHeight="174.0" prefWidth="142.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2px 0px;" text="Home" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+            <Button fx:id="btnSearch" mnemonicParsing="false" onMouseClicked="#goToSearch" prefHeight="165.0" prefWidth="142.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2px 0px;" text="Search" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+            <Button fx:id="btnMyLibraryAccount" mnemonicParsing="false" onMouseClicked="#goToMyLibraryAccount" prefHeight="193.0" prefWidth="142.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2px 0px;" text="My library account" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+         </children>
+      </VBox>
+   </left>
+   <center>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="336.0" fitWidth="493.0" layoutX="150.0" layoutY="118.0">
+               <image>
+                  <Image url="@../../Pictures/LTU_eng_-blue_RGB4-01.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+   </center>
+</BorderPane>
