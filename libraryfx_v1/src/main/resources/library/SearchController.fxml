@@ -10,7 +10,7 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1080.0" style="-fx-background-color: #0A2F52;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.SearchController">
    <children>
-      <TableView layoutX="19.0" layoutY="72.0" prefHeight="476.0" prefWidth="1048.0">
+      <TableView fx:id="tvSearch" layoutX="19.0" layoutY="72.0" prefHeight="476.0" prefWidth="1048.0">
         <columns>
           <TableColumn fx:id="colBarcode" prefWidth="104.0" text="Barcode" />
           <TableColumn fx:id="colTitle" prefWidth="209.0" text="Title" />
