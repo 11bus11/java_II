@@ -26,8 +26,8 @@ public class MyLibraryAccount {
     }
 
     @FXML
-    void goToLoan(MouseEvent event) {
-
+    void goToLoan(MouseEvent event) throws IOException {
+        App.setRoot("LoanController");
     }
 
     @FXML

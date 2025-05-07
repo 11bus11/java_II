@@ -42,8 +42,7 @@ public class LoginController {
 
         if(passwordInput.equals(loginTry.password)){
             System.out.println("Login done");
-            App.isLoggedIn = loginTry;
-            actionLoggedIn();
+            actionLoggedIn(loginTry);
         } else{
             System.out.println("Login Error");
         }
@@ -69,13 +68,15 @@ public class LoginController {
     }
 
     @FXML
-    private static void switchToSecondary() throws IOException {
-        App.setRoot("secondary");
+    private static void switchToHome() throws IOException {
+        App.setRoot("home");
     }
 
-    private static void actionLoggedIn() {
+    private static void actionLoggedIn(User loggedIn) {
         try {
-            switchToSecondary();
+            App.isLoggedIn = loggedIn;
+            switchToHome();
+            
         } catch (Exception e) {
             System.out.println("error dude");
         }

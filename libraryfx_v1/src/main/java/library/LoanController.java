@@ -1,6 +1,8 @@
 
 package library;
 
+import java.io.IOException;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -53,8 +55,8 @@ public class LoanController {
     private TableView<?> tvWork;
 
     @FXML
-    void goToHome(MouseEvent event) {
-
+    void goToHome(MouseEvent event)throws IOException {
+        App.setRoot("Home");
     }
 
     @FXML
@@ -80,6 +82,10 @@ public class LoanController {
     @FXML
     void handleLoan(MouseEvent event) {
 
+    }
+
+    public void addTableElement(String barcode) {
+        //find the correct thing
     }
 
 }
