@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="918.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ReturnLoanController">
+   <children>
+      <VBox layoutX="12.0" layoutY="47.0" prefHeight="26.0" prefWidth="52.0" spacing="15.0" />
+      <VBox layoutX="50.0" layoutY="60.0" prefHeight="26.0" prefWidth="219.0" spacing="10.0" />
+      <TableView fx:id="tvWork" layoutX="146.0" layoutY="154.0" prefHeight="326.0" prefWidth="756.0">
+         <columns>
+            <TableColumn fx:id="colBarcode" prefWidth="97.59991455078125" text="Barcode" />
+            <TableColumn fx:id="colTitle" prefWidth="199.199951171875" text="Title" />
+            <TableColumn fx:id="colAuthor" prefWidth="138.4000244140625" text="Author" />
+            <TableColumn fx:id="colISBN" prefWidth="112.0" text="ISBN" />
+            <TableColumn fx:id="colWorkType" prefWidth="95.199951171875" text="WorkType" />
+            <TableColumn fx:id="colStatus" prefWidth="114.4000244140625" text="Status" />
+         </columns>
+      </TableView>
+      <Button fx:id="btnInsert" layoutX="172.0" layoutY="95.0" mnemonicParsing="false" onMouseClicked="#handleInsert" prefHeight="26.0" prefWidth="76.0" text="Insert">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
+      <Button fx:id="btnReturnLoan" layoutX="769.0" layoutY="534.0" mnemonicParsing="false" onMouseClicked="#handleReturnLoan" prefHeight="37.0" prefWidth="110.0" text="Return Loan">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
+      <Button fx:id="btnDelete" layoutX="291.0" layoutY="95.0" mnemonicParsing="false" onMouseClicked="#handleDelete" prefHeight="26.0" prefWidth="76.0" text="Delete">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
+      <Label layoutX="174.0" layoutY="32.0" prefHeight="30.0" prefWidth="148.0" text=" Search Barcode">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <VBox layoutX="-1.0" layoutY="-1.0" prefHeight="600.0" prefWidth="130.0" style="-fx-background-color: #0A2F52;">
+         <children>
+            <Button fx:id="btnHome" mnemonicParsing="false" onMouseClicked="#goToHome" prefHeight="173.0" prefWidth="130.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2px 0px;" text="Home" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+            <Button fx:id="btnReturnLoan" mnemonicParsing="false" onMouseClicked="#goToLoan" prefHeight="193.0" prefWidth="130.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2px 0px;" text="Loan" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+            <Button fx:id="btnMyLoans" mnemonicParsing="false" onMouseClicked="#goToMyLoans" prefHeight="190.0" prefWidth="130.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2px 0px;" text="My Loans" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+         </children>
+      </VBox>
+      <TextField fx:id="tfBarcode" layoutX="312.0" layoutY="34.0" prefHeight="26.0" prefWidth="586.0" />
+   </children>
+</AnchorPane>
