@@ -35,7 +35,7 @@
          <children>
             <ImageView fitHeight="336.0" fitWidth="493.0" layoutX="150.0" layoutY="118.0">
                <image>
-                  <Image url="@../../Pictures/LTU_eng_-blue_RGB4-01.png" />
+                  <Image url="@../images/LTU_eng_-blue_RGB4-01.png" />
                </image>
             </ImageView>
          </children>
