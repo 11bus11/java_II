@@ -1,5 +1,7 @@
 package library;
 
+import java.io.IOException;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
@@ -19,8 +21,8 @@ public class MyLibraryAccount {
     private Button btnReturnLoan;
 
     @FXML
-    void goToHome(MouseEvent event) {
-
+    void goToHome(MouseEvent event) throws IOException {
+        App.setRoot("Home");
     }
 
     @FXML
