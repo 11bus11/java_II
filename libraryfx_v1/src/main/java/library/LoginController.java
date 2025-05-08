@@ -50,6 +50,7 @@ public class LoginController {
         
     }
 
+    //gets the user trying to log in (for password match)
     public static User getPassword(ArrayList <User> users, String username) {
         User result = null;
         //int i = 0;
@@ -72,13 +73,14 @@ public class LoginController {
         App.setRoot("home");
     }
 
+    //Registers the login and redirects
     private static void actionLoggedIn(User loggedIn) {
         try {
             App.isLoggedIn = loggedIn;
             switchToHome();
             
         } catch (Exception e) {
-            System.out.println("error dude");
+            System.out.println("error");
         }
         
     }

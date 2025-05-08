@@ -32,6 +32,7 @@ public class User {
         this.password = password;
         this.userType = userType;
     }
+    //creating the users from database
     public static ArrayList<User> createUsers() {
         DataSource dataSource = createDataSource();
             ArrayList <User> arrayUsers = new ArrayList<User>();

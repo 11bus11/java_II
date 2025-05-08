@@ -25,6 +25,7 @@ public class Home {
 
     @FXML
     void goToMyLibraryAccount(MouseEvent event) throws IOException {
+        //Check which page should be loaded and load that page
         if (App.isLoggedIn != null) {
             if (App.isLoggedIn.userType.equals("faculty")) {
                 App.setRoot("StaffController");
