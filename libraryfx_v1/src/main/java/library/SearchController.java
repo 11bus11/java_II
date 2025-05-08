@@ -67,27 +67,35 @@ public class SearchController {
     private void loadData(String filter) {
         ObservableList<CopyView> list = FXCollections.observableArrayList();
         String sql =
-        "SELECT c.CopyBarcode   AS barcode, " +
-        "       w.WorkTitle     AS title, " +
-        //"       w.year          AS year, " +
-        "       w.ISBN          AS isbn, " +
-        "       c.CopyStatus    AS status, " +
-        "       w.WorkDesc      AS description, " +
-        "       w.WorkType      AS type " +
-        "FROM Copy c " +
-        "JOIN Work w ON c.WorkID = w.WorkID " +
-        "WHERE c.CopyBarcode LIKE ? " +
-        "   OR w.WorkTitle   LIKE ? " +
-        "   OR w.ISBN        LIKE ? " +
-        "   OR c.CopyStatus  LIKE ? " +
-        "   OR w.WorkDesc    LIKE ? " +
-        "   OR w.WorkType    LIKE ?";
+  "SELECT "
++ "  c.CopyBarcode AS barcode, "
++ "  w.WorkTitle   AS title, "
++ "  w.ISBN        AS isbn, "
++ "  c.CopyStatus  AS status, "
++ "  w.WorkDesc    AS description, "
++ "  w.WorkType    AS type "
++ "FROM Copy c "
++ "JOIN Work w ON c.WorkID = w.WorkID "
++ "WHERE ( c.CopyBarcode LIKE ? "
++ "     OR w.WorkTitle   LIKE ? "
++ "     OR w.ISBN        LIKE ? "
++ "     OR c.CopyStatus  LIKE ? "
++ "     OR w.WorkDesc    LIKE ? "
++ "     OR w.WorkType    LIKE ? ) "
++ "  OR EXISTS ( "
++ "       SELECT 1 "
++ "       FROM WorkKeyword wk "
++ "       JOIN Keyword k ON wk.KeywordID = k.KeywordID "
++ "       WHERE wk.WorkID = w.WorkID "
++ "         AND k.KeywordName LIKE ? "
++ "  )";
+
 
         try (Connection conn = DriverManager.getConnection(URL, USER, PASS);
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             String wildcard = "%" + filter + "%";
-            for (int i = 1; i <= 6; i++) {
+            for (int i = 1; i <= 7; i++) {
                 ps.setString(i, wildcard);
             }
             ResultSet rs = ps.executeQuery();
