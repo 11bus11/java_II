@@ -43,11 +43,11 @@ public class CRUD {                      // <- Must match your filename CRUD.jav
     @FXML private ComboBox<String> cbWorkType;
     @FXML private TextField tfPlacement;
     
-@FXML private TextField  tfFirstName;
-@FXML private TextField  tfLastName;
-@FXML private TextField  tfYear;
-@FXML private TextField  tfDescription;
-@FXML private CheckBox   cbIsReference;
+    @FXML private TextField  tfFirstName;
+    @FXML private TextField  tfLastName;
+    @FXML private TextField  tfYear;
+    @FXML private TextField  tfDescription;
+    @FXML private CheckBox   cbIsReference;
 
 
     // Buttons
@@ -85,7 +85,7 @@ public class CRUD {                      // <- Must match your filename CRUD.jav
         });
 
         cbWorkType.setItems(FXCollections.observableArrayList(
-    "book",
+    "movie",
     "magazine",
     "course literature",
     "other literature"

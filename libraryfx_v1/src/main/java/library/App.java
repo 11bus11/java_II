@@ -48,7 +48,8 @@ public class App extends Application {
     public static void main(String[] args) {
         ArrayList <User> arrayUsers = User.createUsers();
         //System.out.println(arrayUsers);
-        isLoggedIn = arrayUsers.get(0);
+        // tar bort rad för att funka 
+        isLoggedIn = arrayUsers.get(0);      
 
         launch();
     }
