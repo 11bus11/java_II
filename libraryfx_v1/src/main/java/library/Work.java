@@ -7,7 +7,6 @@ public class Work {
     private final String type;
     private final String description;
     //private final int    year;
-    
 
     public Work(int workID, String title, String isbn, String type, String description) {
         this.workID = workID;
