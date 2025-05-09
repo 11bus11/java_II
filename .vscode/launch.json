@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CrudTestApp",
+            "request": "launch",
+            "mainClass": "library/library.CrudTestApp",
+            "projectName": "libraryfx_v1"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
@@ -16,6 +23,6 @@
             "request": "launch",
             "mainClass": "library/library.App",
             "projectName": "libraryfx_v1"
-        },
+        }
     ]
 }
