@@ -13,6 +13,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
@@ -38,7 +39,6 @@ public class CRUD {                      // <- Must match your filename CRUD.jav
     // Form fields
     @FXML private TextField tfBarcode;
     @FXML private TextField tfTitle;
-    @FXML private TextField tfAuthor;
     @FXML private TextField tfISBN;
     @FXML private ComboBox<String> cbWorkType;
     @FXML private TextField tfPlacement;
@@ -59,6 +59,12 @@ public class CRUD {                      // <- Must match your filename CRUD.jav
     private final ObservableList<CopyEntry> data =
       FXCollections.observableArrayList();
 
+
+      // Store currently selected IDs so update can reference them
+private int currentWorkId = -1;
+private int currentAuthorId = -1;
+
+
     @FXML
     private void initialize() {
         // bind columns
@@ -72,17 +78,45 @@ public class CRUD {                      // <- Must match your filename CRUD.jav
 
         tvCRUD.setItems(data);
         tvCRUD.getSelectionModel().selectedItemProperty().addListener((obs, old, sel) -> {
-            if (sel != null) {
-                tfBarcode .setText(sel.getBarcode());
-                tfTitle   .setText(sel.getTitle());
-                tfAuthor  .setText(sel.getAuthor());
-                tfISBN    .setText(sel.getIsbn());
-                cbWorkType.setValue(sel.getWorkType());
-                tfPlacement.setText(sel.getPlacement());
-                
+    if (sel == null) return;
 
-            }
-        });
+    // 1) the fields you already do:
+    tfBarcode .setText(sel.getBarcode());
+    tfTitle   .setText(sel.getTitle());
+    tfISBN    .setText(sel.getIsbn());
+    cbWorkType.setValue(sel.getWorkType());
+    tfPlacement.setText(sel.getPlacement());
+
+    // 2) now grab the rest
+    String sql =
+      "SELECT w.Year, w.WorkDesc, c.IsReference, " +
+      "       a.FirstName, a.LastName, w.WorkID, a.AuthorID " +
+      "FROM Copy c " +
+      " JOIN Work w       ON c.WorkID   = w.WorkID " +
+      " JOIN WorkAuthor wa ON w.WorkID   = wa.WorkID " +
+      " JOIN Author a     ON wa.AuthorID = a.AuthorID " +
+      "WHERE c.CopyBarcode = ?";
+    try (var conn = DbUtil.getConnection();
+         var ps   = conn.prepareStatement(sql)) {
+      ps.setString(1, sel.getBarcode());
+      try (var rs = ps.executeQuery()) {
+        if (rs.next()) {
+          tfYear       .setText(rs.getString("Year"));
+          tfDescription.setText(rs.getString("WorkDesc"));
+          cbIsReference.setSelected(rs.getBoolean("IsReference"));
+          tfFirstName  .setText(rs.getString("FirstName"));
+          tfLastName   .setText(rs.getString("LastName"));
+
+          // stash these IDs in hidden fields so update can find them:
+          currentWorkId   = rs.getInt("WorkID");
+          currentAuthorId = rs.getInt("AuthorID");
+        }
+      }
+    } catch (SQLException ex) {
+      ex.printStackTrace();
+      showError("Could not load details: " + ex.getMessage());
+    }
+});
 
         cbWorkType.setItems(FXCollections.observableArrayList(
     "movie",
@@ -149,6 +183,15 @@ private void handleInsert(ActionEvent ev) {
   }
     
 
+  // --- after you read String isbn and String type ---
+if (("course literature".equals(type) || "other literature".equals(type))
+    && isbn.isEmpty()) {
+    showError("ISBN is required for course literature and other literature.");
+    return;
+}
+
+
+
    // 3) upsert the Work & Author (new signature!)
   int workId = findOrCreateWork(
      title, firstName, lastName,
@@ -170,25 +213,146 @@ private void handleInsert(ActionEvent ev) {
     ps.setInt   (2, workId);
     ps.setBoolean(3, isRef);
     ps.setString(4, placement);
-    ps.executeUpdate();
-  } catch (SQLException ex) {
+    
+    // 2) attempt insert, catching duplicate‐barcode
+    try {
+      ps.executeUpdate();
+    } catch (SQLException ex) {
+      if (ex.getErrorCode() == 1062) {            // MySQL duplicate-key
+        showError("That barcode already exists.");
+        return;
+      } else {
+        throw ex;  // re-throw anything else
+      }
+    }
+
+} catch (SQLException ex) {
     ex.printStackTrace();
-  }
+    showError("Error inserting copy: " + ex.getMessage());
+    return;
+}
 
   // 4) refresh the table
   loadData();
 }
 
 
-    @FXML
-    private void handleUpdate(MouseEvent ev) {
-        // … your update logic …
+   @FXML
+private void handleUpdate(MouseEvent ev) {
+    
+    CopyEntry sel = tvCRUD.getSelectionModel().getSelectedItem();
+    if (sel == null) {
+        showError("Please select a copy to update.");
+        return;
     }
 
-    @FXML
-    private void handleDelete(MouseEvent ev) {
-        // … your delete logic …
+    
+    String oldBarcode   = sel.getBarcode();                 
+    String newBarcode   = tfBarcode.getText().trim();
+    boolean isRef       = cbIsReference.isSelected();
+    String placement    = tfPlacement.getText().trim();
+
+    String newTitle     = tfTitle.getText().trim();
+    String newISBN      = tfISBN.getText().trim();
+    String newType      = cbWorkType.getValue();
+    String newDesc      = tfDescription.getText().trim();
+    String yearText     = tfYear.getText().trim();
+    String newFirstName = tfFirstName.getText().trim();
+    String newLastName  = tfLastName.getText().trim();
+
+    int newYear;
+    try {
+        newYear = Integer.parseInt(yearText);
+    } catch (NumberFormatException ex) {
+        showError("Year must be a number.");
+        return;
     }
+
+    int workId   = currentWorkId;
+    int authorId = currentAuthorId;
+
+    
+    try (Connection conn = DbUtil.getConnection()) {
+        conn.setAutoCommit(false);
+
+        
+        String sqlAuthor = 
+            "UPDATE Author SET FirstName=?, LastName=? WHERE AuthorID=?";
+        try (PreparedStatement ps = conn.prepareStatement(sqlAuthor)) {
+            ps.setString(1, newFirstName);
+            ps.setString(2, newLastName);
+            ps.setInt   (3, authorId);
+            ps.executeUpdate();
+        }
+
+        
+        String sqlWork =
+            "UPDATE Work SET WorkTitle=?, ISBN=?, WorkDesc=?, WorkType=?, Year=? " +
+            "WHERE WorkID=?";
+        try (PreparedStatement ps = conn.prepareStatement(sqlWork)) {
+            ps.setString(1, newTitle);
+            ps.setString(2, newISBN);
+            ps.setString(3, newDesc);
+            ps.setString(4, newType);
+            ps.setInt   (5, newYear);
+            ps.setInt   (6, workId);
+            ps.executeUpdate();
+        }
+
+        
+        String sqlCopy =
+            "UPDATE Copy SET CopyBarcode=?, IsReference=?, CopyPlacement=? " +
+            "WHERE CopyBarcode=?";
+        try (PreparedStatement ps = conn.prepareStatement(sqlCopy)) {
+            ps.setString (1, newBarcode);
+            ps.setBoolean(2, isRef);
+            ps.setString (3, placement);
+            ps.setString (4, oldBarcode);
+            ps.executeUpdate();
+        }
+
+        conn.commit();  
+
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+        showError("Error updating record: " + ex.getMessage());
+    }
+
+    
+    loadData();
+    clearForm();
+}
+
+   @FXML
+private void handleDelete(MouseEvent ev) {
+    CopyEntry sel = tvCRUD.getSelectionModel().getSelectedItem();
+    if (sel == null) {
+        showError("Please select a copy to delete.");
+        return;
+    }
+    // optional confirmation
+    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+        "Are you sure you want to delete copy “" + sel.getBarcode() + "”?",
+        ButtonType.YES, ButtonType.NO);
+    confirm.setHeaderText(null);
+    confirm.showAndWait();
+    if (confirm.getResult() != ButtonType.YES) return;
+
+    String sql = "DELETE FROM Copy WHERE CopyBarcode = ?";
+    try (Connection conn = DbUtil.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, sel.getBarcode());
+        ps.executeUpdate();
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+        showError("Error deleting copy: " + ex.getMessage());
+        return;
+    }
+
+    loadData();
+    clearForm();
+}
+
 
     @FXML
     private void handleReturn(MouseEvent ev) throws IOException {
@@ -296,6 +460,22 @@ private void showError(String message) {
   alert.setHeaderText(null);
   alert.setContentText(message);
   alert.showAndWait();
+}
+
+/** clear every field back to its “empty” state */
+private void clearForm() {
+    tfBarcode.clear();
+    tfTitle.clear();
+    tfISBN.clear();
+    tfPlacement.clear();
+    tfYear.clear();
+    cbWorkType.setValue(null);
+    tfFirstName.clear();
+    tfLastName.clear();
+    tfDescription.clear();
+    cbIsReference.setSelected(false);
+    tfFirstName.clear();
+    tfLastName.clear();
 }
 
 }
