@@ -30,14 +30,14 @@ public class Loan {
         ArrayList <Loan> arrayLoans = new ArrayList<Loan>();
             
         try (Connection connection = dataSource.getConnection()) {
-            ResultSet resultSetUser = connection.createStatement().executeQuery("select * from User");
+            
             ResultSet resultSetLoan= connection.createStatement().executeQuery("select * from Loan");
-            ResultSet resultSetCopy= connection.createStatement().executeQuery("select * from LoanCopy");
+            //ResultSet resultSetCopy= connection.createStatement().executeQuery("select * from LoanCopy");
             while(resultSetLoan.next()){
                 int loanID = resultSetLoan.getInt("LoanID");
                 LocalDateTime borrowDate = LocalDateTime.now();
-                User user = findLoanUser(resultSetUser.getInt("UserID"));
-                ArrayList<Copy> copiesLoaned = findLoanCopy(resultSetCopy.getInt("CopyID"));
+                User user = findLoanUser(resultSetLoan.getInt("UserID"));
+                // fundera --> ArrayList<Copy> copiesLoaned = findLoanCopy(resultSetLoan.getInt("LoanID"));
                 Loan loan = new Loan(loanID, borrowDate, user, copiesLoaned);
                 arrayLoans.add(loan);
                 System.out.println(loan.loanID);
