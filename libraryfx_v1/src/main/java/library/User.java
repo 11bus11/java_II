@@ -53,11 +53,14 @@ public class User {
                 
             } catch (SQLException e) {
                 e.printStackTrace();
-            }
+        }
 
             
-            return arrayUsers;
-        }
+        return arrayUsers;
+    }
+
+    //Global variable containing all users
+    static ArrayList <User> arrayUsersGlobal = createUsers();
 
 
     private static DataSource createDataSource() {
