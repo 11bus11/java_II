@@ -37,7 +37,8 @@ public class Loan {
                 int loanID = resultSetLoan.getInt("LoanID");
                 LocalDateTime borrowDate = LocalDateTime.now();
                 User user = findLoanUser(resultSetLoan.getInt("UserID"));
-                // fundera --> ArrayList<Copy> copiesLoaned = findLoanCopy(resultSetLoan.getInt("LoanID"));
+                // fundera --> 
+                ArrayList<Copy> copiesLoaned = findLoanCopy(resultSetLoan.getInt("LoanID"));
                 Loan loan = new Loan(loanID, borrowDate, user, copiesLoaned);
                 arrayLoans.add(loan);
                 System.out.println(loan.loanID);
