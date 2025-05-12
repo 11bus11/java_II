@@ -26,18 +26,18 @@ public class Loan {
 
     //creating the loans from database
     public static ArrayList<Loan> createLoans() {
-        DataSource dataSource = createDataSource();
+        DataSource dataSource = DbUtil.createDataSource();
         ArrayList <Loan> arrayLoans = new ArrayList<Loan>();
             
         try (Connection connection = dataSource.getConnection()) {
             
             ResultSet resultSetLoan= connection.createStatement().executeQuery("select * from Loan");
-            //ResultSet resultSetCopy= connection.createStatement().executeQuery("select * from LoanCopy");
             while(resultSetLoan.next()){
                 int loanID = resultSetLoan.getInt("LoanID");
                 LocalDateTime borrowDate = LocalDateTime.now();
                 User user = findLoanUser(resultSetLoan.getInt("UserID"));
-                // fundera --> ArrayList<Copy> copiesLoaned = findLoanCopy(resultSetLoan.getInt("LoanID"));
+                //fundera -->
+                ArrayList<Copy> copiesLoaned = findLoanCopy(resultSetLoan.getInt("LoanID"));
                 Loan loan = new Loan(loanID, borrowDate, user, copiesLoaned);
                 arrayLoans.add(loan);
                 System.out.println(loan.loanID);
@@ -61,21 +61,15 @@ public class Loan {
     }
 
     //finding the copies that were loaned
+    //not working
     public static ArrayList<Copy> findLoanCopy(int id) {
         ArrayList<Copy> loanCopy = new ArrayList<Copy>();
         for (Copy i : Copy.createCopies()) {
-            if (i.copyID == id) {
+            if (Copy.getCopyID(i) == id) {
                 loanCopy.add(i);
             }
         }
         return loanCopy;
-    }
-
-    private static DataSource createDataSource() {
-        String password = Secret.Password();
-        HikariDataSource ds = new HikariDataSource();
-        ds.setJdbcUrl(String.format("jdbc:mysql://address=(host=mysql-eebfafa-library1.j.aivencloud.com)(port=27035)(user=avnadmin)(password=%s)(ssl-mode=REQUIRED)/defaultdb", password));
-        return ds;
     }
     
 }
