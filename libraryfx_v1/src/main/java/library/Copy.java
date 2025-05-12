@@ -37,10 +37,8 @@ public class Copy {
                 ResultSet resultSet = connection.createStatement().executeQuery("select * from Copy");
                 while(resultSet.next()){
                     int copyID = resultSet.getInt("CopyID");
-
-
-                    String firstName = resultSet.getString("FirstName");
-                    String lastName = resultSet.getString("LastName");
+                    String barcode = resultSet.getString("Barcode");
+                    Work work = findCopyWork(resultSet.getString("WorkID"));
                     String email = resultSet.getString("Email");
                     String password = resultSet.getString("Password");
                     String userType = resultSet.getString("UserType");
@@ -48,6 +46,12 @@ public class Copy {
                     arrayCopies.add(copy);
                     System.out.println(user.lastName);
                 }
+
+                private String barcode;
+    private final Work work;
+    private boolean isReference;
+    private String copyStatus;
+    private String copyPlacement;
                 
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -57,6 +61,17 @@ public class Copy {
         return arrayCopies;
     }
 
+    //finding the user who made the loan
+    public static User findCopyWork(int id) {
+        Work copyWork = null;
+        for (User i : Work.arrayWorksGlobal) {
+            if (i.userID == id) {
+                copyWork = i;
+            }
+        }
+        return copyWork;
+    }
+
     //Global variable containing all users
-    static ArrayList <User> arrayUsersGlobal = createUsers();
+    static ArrayList <Copy> arrayCopiesGlobal = createCopies();
 }
