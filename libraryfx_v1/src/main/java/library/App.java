@@ -56,7 +56,7 @@ public class App extends Application {
 
     
 
-    private static DataSource createDataSource() {
+    public static DataSource createDataSource() {
         String password = Secret.Password();
         HikariDataSource ds = new HikariDataSource();
         ds.setJdbcUrl(String.format("jdbc:mysql://address=(host=mysql-eebfafa-library1.j.aivencloud.com)(port=27035)(user=avnadmin)(password=%s)(ssl-mode=REQUIRED)/defaultdb", password));

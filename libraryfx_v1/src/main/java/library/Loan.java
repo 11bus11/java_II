@@ -26,22 +26,21 @@ public class Loan {
 
     //creating the loans from database
     public static ArrayList<Loan> createLoans() {
-        DataSource dataSource = createDataSource();
+        DataSource dataSource = DbUtil.createDataSource();
         ArrayList <Loan> arrayLoans = new ArrayList<Loan>();
             
         try (Connection connection = dataSource.getConnection()) {
-            ResultSet resultSet = connection.createStatement().executeQuery("select * from User");
-            ResultSet resultUser = connection.createStatement().executeQuery("select * from User");
-            while(resultSet.next()){
-                int loanID = resultSet.getInt("LoanID");
+            
+            ResultSet resultSetLoan= connection.createStatement().executeQuery("select * from Loan");
+            while(resultSetLoan.next()){
+                int loanID = resultSetLoan.getInt("LoanID");
                 LocalDateTime borrowDate = LocalDateTime.now();
-                User user = resultSet.getString("UserID");
-                String email = resultSet.getString("Email");
-                String password = resultSet.getString("Password");
-                String userType = resultSet.getString("UserType");
-                User user = new User(loanID, borrowDate, user, copiesLoaned);
-                arrayUsers.add(user);
-                System.out.println(user.lastName);
+                User user = findLoanUser(resultSetLoan.getInt("UserID"));
+                //fundera -->
+                ArrayList<Copy> copiesLoaned = findLoanCopy(resultSetLoan.getInt("LoanID"));
+                Loan loan = new Loan(loanID, borrowDate, user, copiesLoaned);
+                arrayLoans.add(loan);
+                System.out.println(loan.loanID);
             }
                 
         } catch (SQLException e) {
@@ -50,19 +49,27 @@ public class Loan {
         return arrayLoans;
     }
 
+    //finding the user who made the loan
     public static User findLoanUser(int id) {
-        User loanUser;
-        
-
+        User loanUser = null;
+        for (User i : User.arrayUsersGlobal) {
+            if (i.userID == id) {
+                loanUser = i;
+            }
+        }
         return loanUser;
-
     }
 
-    private static DataSource createDataSource() {
-        String password = Secret.Password();
-        HikariDataSource ds = new HikariDataSource();
-        ds.setJdbcUrl(String.format("jdbc:mysql://address=(host=mysql-eebfafa-library1.j.aivencloud.com)(port=27035)(user=avnadmin)(password=%s)(ssl-mode=REQUIRED)/defaultdb", password));
-        return ds;
+    //finding the copies that were loaned
+    //not working
+    public static ArrayList<Copy> findLoanCopy(int id) {
+        ArrayList<Copy> loanCopy = new ArrayList<Copy>();
+        for (Copy i : Copy.createCopies()) {
+            if (Copy.getCopyID(i) == id) {
+                loanCopy.add(i);
+            }
+        }
+        return loanCopy;
     }
     
 }

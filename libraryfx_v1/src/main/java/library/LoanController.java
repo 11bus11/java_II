@@ -65,8 +65,8 @@ public class LoanController {
     }
 
     @FXML
-    void goToMyLoans(MouseEvent event) {
-
+    void goToMyLoans(MouseEvent event)  throws IOException {
+        App.setRoot("MyLoansController");
     }
 
     @FXML
@@ -76,7 +76,7 @@ public class LoanController {
 
     @FXML
     void handleInsert(MouseEvent event) {
-
+        addTableElement();
     }
 
     @FXML
