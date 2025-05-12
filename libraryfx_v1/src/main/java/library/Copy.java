@@ -29,7 +29,7 @@ public class Copy {
     public String getCopyStatus(){ return copyStatus; }
     public Work   getWork()      { return work; }
 
-    public static ArrayList<Copy> createUsers() {
+    public static ArrayList<Copy> createCopy() {
         DataSource dataSource = DbUtil.createDataSource();
             ArrayList <Copy> arrayCopies = new ArrayList<Copy>();
             
