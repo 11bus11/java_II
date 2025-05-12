@@ -1,12 +1,12 @@
 package library;
 
 public class Work {
-    private final int    workID;
-    private final String title;
-    private final String isbn;
-    private final String type;
-    private final String description;
-    //private final int    year;
+    private int workID;
+    private String title;
+    private String isbn;
+    private String type;
+    private String description;
+    private int year;
 
     public Work(int workID, String title, String isbn, String type, String description) {
         this.workID = workID;

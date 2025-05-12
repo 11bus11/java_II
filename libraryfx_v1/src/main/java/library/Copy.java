@@ -1,12 +1,12 @@
 package library;
 
 public class Copy {
-    private final String copyID;
-    private final String barcode;
-    private final Work   work;
-    private final boolean isReference;
-    private final String copyStatus;
-    private final String copyPlacement;
+    private String copyID;
+    private String barcode;
+    private final Work work;
+    private boolean isReference;
+    private String copyStatus;
+    private String copyPlacement;
 
     public Copy(String copyID, String barcode, Work work,
                 boolean isReference, String copyStatus, String copyPlacement) {
