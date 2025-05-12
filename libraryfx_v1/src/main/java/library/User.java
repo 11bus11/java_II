@@ -34,7 +34,7 @@ public class User {
     }
     //creating the users from database
     public static ArrayList<User> createUsers() {
-        DataSource dataSource = createDataSource();
+        DataSource dataSource = DbUtil.createDataSource();
             ArrayList <User> arrayUsers = new ArrayList<User>();
             
             try (Connection connection = dataSource.getConnection()) {
@@ -61,15 +61,5 @@ public class User {
 
     //Global variable containing all users
     static ArrayList <User> arrayUsersGlobal = createUsers();
-
-
-    private static DataSource createDataSource() {
-        String password = Secret.Password();
-        HikariDataSource ds = new HikariDataSource();
-        ds.setJdbcUrl(String.format("jdbc:mysql://address=(host=mysql-eebfafa-library1.j.aivencloud.com)(port=27035)(user=avnadmin)(password=%s)(ssl-mode=REQUIRED)/defaultdb", password));
-        return ds;
-    }
-
-    
 }
 

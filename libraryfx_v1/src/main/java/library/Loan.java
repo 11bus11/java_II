@@ -15,9 +15,9 @@ public class Loan {
     int loanID;
     LocalDateTime borrowDate;
     User user;
-    ArrayList<Copy2> copiesLoaned;
+    ArrayList<Copy> copiesLoaned;
 
-    public Loan(int loanID, LocalDateTime borrowDate, User user, ArrayList<Copy2> copiesLoaned) {
+    public Loan(int loanID, LocalDateTime borrowDate, User user, ArrayList<Copy> copiesLoaned) {
         this.loanID = loanID;
         this.borrowDate = borrowDate;
         this.user = user;
@@ -26,7 +26,7 @@ public class Loan {
 
     //creating the loans from database
     public static ArrayList<Loan> createLoans() {
-        DataSource dataSource = createDataSource();
+        DataSource dataSource = DbUtil.createDataSource();
         ArrayList <Loan> arrayLoans = new ArrayList<Loan>();
             
         try (Connection connection = dataSource.getConnection()) {
@@ -62,21 +62,14 @@ public class Loan {
     }
 
     //finding the copies that were loaned
-    public static ArrayList<Copy2> findLoanCopy(int id) {
-        ArrayList<Copy2> loanCopy = new ArrayList<Copy2>();
-        for (Copy2 i : Copy2.createCopies()) {
-            if (i.copyID == id) {
+    public static ArrayList<Copy> findLoanCopy(int id) {
+        ArrayList<Copy> loanCopy = new ArrayList<Copy>();
+        for (Copy i : Copy.createCopies()) {
+            if (Copy.getCopyID(i) == id) {
                 loanCopy.add(i);
             }
         }
         return loanCopy;
-    }
-
-    private static DataSource createDataSource() {
-        String password = Secret.Password();
-        HikariDataSource ds = new HikariDataSource();
-        ds.setJdbcUrl(String.format("jdbc:mysql://address=(host=mysql-eebfafa-library1.j.aivencloud.com)(port=27035)(user=avnadmin)(password=%s)(ssl-mode=REQUIRED)/defaultdb", password));
-        return ds;
     }
     
 }

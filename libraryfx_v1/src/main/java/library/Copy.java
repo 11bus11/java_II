@@ -24,6 +24,8 @@ public class Copy {
         this.copyStatus    = copyStatus;
         this.copyPlacement = copyPlacement;
     }
+
+    public static int getCopyID(Copy copy)       { return copy.copyID; }
     
     //created copies from the database
     public static ArrayList<Copy> createCopies() {
