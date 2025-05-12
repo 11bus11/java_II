@@ -26,7 +26,8 @@ public class Work {
         this.author = author;
         this.year = year;
     }
-
+    
+    public static int getWorkID(Work id)       { return id.workID; }
     public String getTitle()       { return title; }
     public String getIsbn()        { return isbn; }
     public String getType()        { return type; }

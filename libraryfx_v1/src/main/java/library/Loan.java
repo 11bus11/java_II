@@ -15,9 +15,9 @@ public class Loan {
     int loanID;
     LocalDateTime borrowDate;
     User user;
-    ArrayList<Copy> copiesLoaned;
+    ArrayList<Copy2> copiesLoaned;
 
-    public Loan(int loanID, LocalDateTime borrowDate, User user, ArrayList<Copy> copiesLoaned) {
+    public Loan(int loanID, LocalDateTime borrowDate, User user, ArrayList<Copy2> copiesLoaned) {
         this.loanID = loanID;
         this.borrowDate = borrowDate;
         this.user = user;
@@ -38,7 +38,7 @@ public class Loan {
                 LocalDateTime borrowDate = LocalDateTime.now();
                 User user = findLoanUser(resultSetLoan.getInt("UserID"));
                 // fundera --> 
-                ArrayList<Copy> copiesLoaned = findLoanCopy(resultSetLoan.getInt("LoanID"));
+                ArrayList<Copy2> copiesLoaned = findLoanCopy(resultSetLoan.getInt("LoanID"));
                 Loan loan = new Loan(loanID, borrowDate, user, copiesLoaned);
                 arrayLoans.add(loan);
                 System.out.println(loan.loanID);
@@ -62,9 +62,9 @@ public class Loan {
     }
 
     //finding the copies that were loaned
-    public static ArrayList<Copy> findLoanCopy(int id) {
-        ArrayList<Copy> loanCopy = new ArrayList<Copy>();
-        for (Copy i : Copy.createCopies()) {
+    public static ArrayList<Copy2> findLoanCopy(int id) {
+        ArrayList<Copy2> loanCopy = new ArrayList<Copy2>();
+        for (Copy2 i : Copy2.createCopies()) {
             if (i.copyID == id) {
                 loanCopy.add(i);
             }

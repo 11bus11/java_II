@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Copy",
+            "request": "launch",
+            "mainClass": "library/library.Copy",
+            "projectName": "libraryfx_v1"
+        },
+        {
+            "type": "java",
             "name": "CrudTestApp",
             "request": "launch",
             "mainClass": "library/library.CrudTestApp",

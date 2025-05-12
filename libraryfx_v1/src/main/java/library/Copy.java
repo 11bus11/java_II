@@ -8,17 +8,23 @@ import java.util.ArrayList;
 import javax.sql.DataSource;
 
 public class Copy {
-    private String copyID;
+    private int copyID;
     private String barcode;
     private Work work;
     private boolean isReference;
     private String copyStatus;
     private String copyPlacement;
 
+    public Copy(int copyID, String barcode, Work work,
+                boolean isReference, String copyStatus, String copyPlacement) {
+        this.copyID        = copyID;
+        this.barcode       = barcode;
+        this.work          = work;
+        this.isReference   = isReference;
+        this.copyStatus    = copyStatus;
+        this.copyPlacement = copyPlacement;
+    }
     
-
-    
-
     //created copies from the database
     public static ArrayList<Copy> createCopies() {
         DataSource dataSource = DbUtil.createDataSource();
@@ -49,7 +55,7 @@ public class Copy {
     public static Work findCopyWork(int id) {
         Work copyWork = null;
         for (Work i : Work.arrayWorksGlobal) {
-            if (i.workID == id) {
+            if (Work.getWorkID(i) == id) {
                 copyWork = i;
             }
         }
@@ -59,3 +65,5 @@ public class Copy {
     //Global variable containing all copies
     static ArrayList <Copy> arrayCopiesGlobal = createCopies();
 }
+    
+
