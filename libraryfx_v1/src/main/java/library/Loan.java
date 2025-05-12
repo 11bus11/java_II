@@ -32,13 +32,12 @@ public class Loan {
         try (Connection connection = dataSource.getConnection()) {
             
             ResultSet resultSetLoan= connection.createStatement().executeQuery("select * from Loan");
-            //ResultSet resultSetCopy= connection.createStatement().executeQuery("select * from LoanCopy");
             while(resultSetLoan.next()){
                 int loanID = resultSetLoan.getInt("LoanID");
                 LocalDateTime borrowDate = LocalDateTime.now();
                 User user = findLoanUser(resultSetLoan.getInt("UserID"));
-                // fundera --> 
-                ArrayList<Copy2> copiesLoaned = findLoanCopy(resultSetLoan.getInt("LoanID"));
+                //fundera -->
+                ArrayList<Copy> copiesLoaned = findLoanCopy(resultSetLoan.getInt("LoanID"));
                 Loan loan = new Loan(loanID, borrowDate, user, copiesLoaned);
                 arrayLoans.add(loan);
                 System.out.println(loan.loanID);
@@ -62,6 +61,7 @@ public class Loan {
     }
 
     //finding the copies that were loaned
+    //not working
     public static ArrayList<Copy> findLoanCopy(int id) {
         ArrayList<Copy> loanCopy = new ArrayList<Copy>();
         for (Copy i : Copy.createCopies()) {
