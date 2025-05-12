@@ -28,17 +28,17 @@ public class LoginController {
     private Label wrongLogin;
 
     
-    ArrayList <User> arrayUsers = User.createUsers();
+    //ArrayList <User> arrayUsers = User.createUsers();
    
 
     @FXML
     private void logIn(ActionEvent event) {
         
-        System.out.println(arrayUsers);
+        System.out.println(User.arrayUsersGlobal);
         String usernameInput = username.getText();
         String passwordInput = password.getText();
 
-        User loginTry = getPassword(arrayUsers, usernameInput);
+        User loginTry = getPassword(User.arrayUsersGlobal, usernameInput);
 
         if(passwordInput.equals(loginTry.password)){
             System.out.println("Login done");

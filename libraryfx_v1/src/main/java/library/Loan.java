@@ -30,18 +30,17 @@ public class Loan {
         ArrayList <Loan> arrayLoans = new ArrayList<Loan>();
             
         try (Connection connection = dataSource.getConnection()) {
-            ResultSet resultSet = connection.createStatement().executeQuery("select * from User");
-            ResultSet resultUser = connection.createStatement().executeQuery("select * from User");
-            while(resultSet.next()){
-                int loanID = resultSet.getInt("LoanID");
+            ResultSet resultSetUser = connection.createStatement().executeQuery("select * from User");
+            ResultSet resultSetLoan= connection.createStatement().executeQuery("select * from Loan");
+            ResultSet resultSetCopy= connection.createStatement().executeQuery("select * from LoanCopy");
+            while(resultSetLoan.next()){
+                int loanID = resultSetLoan.getInt("LoanID");
                 LocalDateTime borrowDate = LocalDateTime.now();
-                User user = resultSet.getString("UserID");
-                String email = resultSet.getString("Email");
-                String password = resultSet.getString("Password");
-                String userType = resultSet.getString("UserType");
-                User user = new User(loanID, borrowDate, user, copiesLoaned);
-                arrayUsers.add(user);
-                System.out.println(user.lastName);
+                User user = findLoanUser(resultSetUser.getInt("UserID"));
+                ArrayList<Copy> copiesLoaned = findLoanCopy(resultSetCopy.getInt("CopyID"));
+                Loan loan = new Loan(loanID, borrowDate, user, copiesLoaned);
+                arrayLoans.add(loan);
+                System.out.println(loan.loanID);
             }
                 
         } catch (SQLException e) {
@@ -50,12 +49,26 @@ public class Loan {
         return arrayLoans;
     }
 
+    //finding the user who made the loan
     public static User findLoanUser(int id) {
-        User loanUser;
-        
-
+        User loanUser = null;
+        for (User i : User.arrayUsersGlobal) {
+            if (i.userID == id) {
+                loanUser = i;
+            }
+        }
         return loanUser;
+    }
 
+    //finding the copies that were loaned
+    public static ArrayList<Copy> findLoanCopy(int id) {
+        ArrayList<Copy> loanCopy = new ArrayList<Copy>();
+        for (Copy i : Copy.createCopies()) {
+            if (i.copyID == id) {
+                loanCopy.add(i);
+            }
+        }
+        return loanCopy;
     }
 
     private static DataSource createDataSource() {
