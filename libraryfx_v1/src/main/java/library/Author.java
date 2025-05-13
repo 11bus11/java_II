@@ -7,43 +7,46 @@ import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
+
 public class Author {
-    private int authorID;
+
+    
+    private int    authorID;
     private String firstName;
     private String lastName;
 
     public Author(int authorID, String firstName, String lastName) {
-        this.authorID = authorID;
+        this.authorID  = authorID;
         this.firstName = firstName;
-        this.lastName = lastName;
+        this.lastName  = lastName;
     }
 
-    public static int getAuthorID(Author author)       { return author.authorID; }
+    /* ---------- Getters ---------- */
+    public int    getAuthorID() { return authorID; }
+    public String getFirstName(){ return firstName; }
+    public String getLastName (){ return lastName;  }
 
-    //creating the authors from database
+    /* ---------- Setters ---------- */
+    public void setFirstName(String v){ this.firstName = v; }
+    public void setLastName (String v){ this.lastName  = v; }
+
+    
     public static ArrayList<Author> createAuthors() {
-        DataSource dataSource = DbUtil.createDataSource();
-            ArrayList <Author> arrayAuthors = new ArrayList<Author>();
-            
-            try (Connection connection = dataSource.getConnection()) {
-                ResultSet resultSet = connection.createStatement().executeQuery("select * from Author");
-                while(resultSet.next()){
-                    int authorID = resultSet.getInt("AuthorID");
-                    String firstName = resultSet.getString("FirstName");
-                    String lastName = resultSet.getString("LastName");
-                    Author author = new Author(authorID, firstName, lastName);
-                    arrayAuthors.add(author);
-                }
-                
-            } catch (SQLException e) {
-                e.printStackTrace();
-        }
-
-            
-        return arrayAuthors;
+        ArrayList<Author> list = new ArrayList<>();
+        DataSource ds = DbUtil.createDataSource();
+        try (Connection c = ds.getConnection();
+             ResultSet rs = c.createStatement().executeQuery("SELECT * FROM Author")) {
+            while (rs.next()) {
+                list.add(new Author(
+                    rs.getInt   ("AuthorID"),
+                    rs.getString("FirstName"),
+                    rs.getString("LastName")
+                ));
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return list;
     }
 
-
-    //Global variable containing all users
-    static ArrayList <Author> arrayAuthorsGlobal = createAuthors();
+    
+    public static final ArrayList<Author> arrayAuthorsGlobal = createAuthors();
 }
