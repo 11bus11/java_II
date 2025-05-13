@@ -89,3 +89,12 @@ public class LoanController {
     }
 
 }
+
+//@FXML private TableView<CopyEntry>           tvCRUD;
+//   
+//    @FXML private TableColumn<CopyEntry,String>  colBarcode;
+//    @FXML private TableColumn<CopyEntry,String>  colTitle;
+//    @FXML private TableColumn<CopyEntry,String>  colAuthor;
+//    @FXML private TableColumn<CopyEntry,String>  colISBN;
+//    @FXML private TableColumn<CopyEntry,String>  colWorkType;
+//    @FXML private TableColumn<CopyEntry,String>  colPlacement;
