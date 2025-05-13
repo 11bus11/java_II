@@ -3,6 +3,8 @@ package library;
 
 import java.io.IOException;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -54,6 +56,29 @@ public class LoanController {
     @FXML
     private TableView<?> tvWork;
 
+    private final ObservableList<Copy> data =
+      FXCollections.observableArrayList();
+
+    @FXML
+    private void initialize() {
+        // bind columns
+       
+        colBarcode  .setCellValueFactory(new PropertyValueFactory<>("barcode"));
+        colTitle    .setCellValueFactory(new PropertyValueFactory<>("title"));
+        colAuthor   .setCellValueFactory(new PropertyValueFactory<>("author"));
+        colISBN     .setCellValueFactory(new PropertyValueFactory<>("isbn"));
+
+        tvWork.setItems(data);
+        tvWork.getSelectionModel().selectedItemProperty().addListener((obs, old, sel) -> {
+    if (sel == null) return;
+
+    // 1) the fields you already do:
+    tfBarcode .setText(sel.getBarcode());
+    tfTitle   .setText(sel.getTitle());
+    tfISBN    .setText(sel.getIsbn());
+    cbWorkType.setValue(sel.getWorkType());
+    tfPlacement.setText(sel.getPlacement());
+
     @FXML
     void goToHome(MouseEvent event)throws IOException {
         App.setRoot("Home");
@@ -76,6 +101,7 @@ public class LoanController {
 
     @FXML
     void handleInsert(MouseEvent event) {
+
         addTableElement();
     }
 
@@ -85,6 +111,15 @@ public class LoanController {
     }
 
     public void addTableElement(String barcode) {
+        String inputBarcode   = tfBarcode.getText().trim();
+        int index = 0;
+        while (Copy.arrayCopiesGlobal.size() <= index)
+        if (Copy.getIsReference(Copy.arrayCopiesGlobal.get(index))) {
+            showError("ISBN is required for course literature and other literature.");
+        }
+        return;
+        
+}
         //find the correct thing
     }
 

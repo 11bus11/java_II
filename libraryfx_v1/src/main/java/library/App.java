@@ -46,12 +46,12 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-        ArrayList <Copy> arrayCopies = Copy.createCopies();
+        //ArrayList <Copy> arrayCopies = Copy.createCopies();
         //System.out.println(arrayUsers);
         // tar bort rad för att funka 
         isLoggedIn = User.arrayUsersGlobal.get(0); 
-        System.out.println(Loan.arrayLoansGlobal.get(0).copiesLoaned + " " + Loan.arrayLoansGlobal.get(0).borrowDate);
-        System.out.println(Author.arrayAuthorsGlobal);
+        //System.out.println(Loan.arrayLoansGlobal.get(0).copiesLoaned + " " + Loan.arrayLoansGlobal.get(0).borrowDate);
+        //System.out.println(Author.arrayAuthorsGlobal);
 
         launch();
     }
