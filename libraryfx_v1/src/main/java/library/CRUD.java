@@ -1,6 +1,5 @@
 package library;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,460 +21,331 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 
-public class CRUD {                      // <- Must match your filename CRUD.java
+/**
+ * CRUD – handles database operations, maintains memory caches,
+ * and validates ISBN for “course literature” and “other literature”.
+ */
+public class CRUD {
 
-    
+    //Table
+    @FXML private TableView<CopyEntry> tvCRUD;
+    @FXML private TableColumn<CopyEntry,String> colBarcode,colTitle,colAuthor,
+                                               colISBN,colWorkType,colPlacement;
 
-    // TableView + columns
-    @FXML private TableView<CopyEntry>           tvCRUD;
-   
-    @FXML private TableColumn<CopyEntry,String>  colBarcode;
-    @FXML private TableColumn<CopyEntry,String>  colTitle;
-    @FXML private TableColumn<CopyEntry,String>  colAuthor;
-    @FXML private TableColumn<CopyEntry,String>  colISBN;
-    @FXML private TableColumn<CopyEntry,String>  colWorkType;
-    @FXML private TableColumn<CopyEntry,String>  colPlacement;
-
-    // Form fields
-    @FXML private TextField tfBarcode;
-    @FXML private TextField tfTitle;
-    @FXML private TextField tfISBN;
+    //Textfield 
+    @FXML private TextField tfBarcode,tfTitle,tfISBN,tfPlacement,
+                            tfFirstName,tfLastName,tfYear,tfDescription;
     @FXML private ComboBox<String> cbWorkType;
-    @FXML private TextField tfPlacement;
-    
-    @FXML private TextField  tfFirstName;
-    @FXML private TextField  tfLastName;
-    @FXML private TextField  tfYear;
-    @FXML private TextField  tfDescription;
-    @FXML private CheckBox   cbIsReference;
+    @FXML private CheckBox cbIsReference;
+
+    @FXML private Button btnInsert,btnUpdate,btnDelete,btnReturn;
+
+    private final ObservableList<CopyEntry> data = FXCollections.observableArrayList();
 
 
-    // Buttons
-    @FXML private Button btnInsert;
-    @FXML private Button btnUpdate;
-    @FXML private Button btnDelete;
-    @FXML private Button btnReturn;
-
-    private final ObservableList<CopyEntry> data =
-      FXCollections.observableArrayList();
-
-
-      // Store currently selected IDs so update can reference them
-private int currentWorkId = -1;
-private int currentAuthorId = -1;
-
-
+    //INITIALIZATION 
     @FXML
     private void initialize() {
-        // bind columns
-       
-        colBarcode  .setCellValueFactory(new PropertyValueFactory<>("barcode"));
-        colTitle    .setCellValueFactory(new PropertyValueFactory<>("title"));
-        colAuthor   .setCellValueFactory(new PropertyValueFactory<>("author"));
-        colISBN     .setCellValueFactory(new PropertyValueFactory<>("isbn"));
-        colWorkType .setCellValueFactory(new PropertyValueFactory<>("workType"));
+        colBarcode .setCellValueFactory(new PropertyValueFactory<>("barcode"));
+        colTitle   .setCellValueFactory(new PropertyValueFactory<>("title"));
+        colAuthor  .setCellValueFactory(new PropertyValueFactory<>("author"));
+        colISBN    .setCellValueFactory(new PropertyValueFactory<>("isbn"));
+        colWorkType.setCellValueFactory(new PropertyValueFactory<>("workType"));
         colPlacement.setCellValueFactory(new PropertyValueFactory<>("placement"));
 
-        tvCRUD.setItems(data);
-        tvCRUD.getSelectionModel().selectedItemProperty().addListener((obs, old, sel) -> {
-    if (sel == null) return;
-
-    // 1) the fields you already do:
-    tfBarcode .setText(sel.getBarcode());
-    tfTitle   .setText(sel.getTitle());
-    tfISBN    .setText(sel.getIsbn());
-    cbWorkType.setValue(sel.getWorkType());
-    tfPlacement.setText(sel.getPlacement());
-
-    // 2) now grab the rest
-    String sql =
-      "SELECT w.Year, w.WorkDesc, c.IsReference, " +
-      "       a.FirstName, a.LastName, w.WorkID, a.AuthorID " +
-      "FROM Copy c " +
-      " JOIN Work w       ON c.WorkID   = w.WorkID " +
-      " JOIN WorkAuthor wa ON w.WorkID   = wa.WorkID " +
-      " JOIN Author a     ON wa.AuthorID = a.AuthorID " +
-      "WHERE c.CopyBarcode = ?";
-    try (var conn = DbUtil.getConnection();
-         var ps   = conn.prepareStatement(sql)) {
-      ps.setString(1, sel.getBarcode());
-      try (var rs = ps.executeQuery()) {
-        if (rs.next()) {
-          tfYear       .setText(rs.getString("Year"));
-          tfDescription.setText(rs.getString("WorkDesc"));
-          cbIsReference.setSelected(rs.getBoolean("IsReference"));
-          tfFirstName  .setText(rs.getString("FirstName"));
-          tfLastName   .setText(rs.getString("LastName"));
-
-          // stash these IDs in hidden fields so update can find them:
-          currentWorkId   = rs.getInt("WorkID");
-          currentAuthorId = rs.getInt("AuthorID");
-        }
-      }
-    } catch (SQLException ex) {
-      ex.printStackTrace();
-      showError("Could not load details: " + ex.getMessage());
-    }
-});
-
+        //add options to Combobox
         cbWorkType.setItems(FXCollections.observableArrayList(
-    "movie",
-    "magazine",
-    "course literature",
-    "other literature"
-));
-cbWorkType.setPromptText("Select Type");
+            "movie","magazine","course literature","other literature"));
+        cbWorkType.setPromptText("Select Type");
 
+        //Set table data
+        tvCRUD.setItems(data);
+        loadData();
+
+        //Fill the form when a row is selected
+        tvCRUD.getSelectionModel().selectedItemProperty().addListener((o,oldSel,sel)->{
+            if(sel==null)return;
+            Copy c = Copy.arrayCopiesGlobal.stream()
+                         .filter(cp->cp.getBarcode().equals(sel.getBarcode()))
+                         .findFirst().orElse(null);
+            if(c==null)return;
+
+            Work w=c.getWork(); Author a=(w!=null)?w.getAuthor():null;
+
+            tfBarcode.setText(c.getBarcode());
+            tfPlacement.setText(c.getCopyPlacement());
+            cbIsReference.setSelected(c.isReference());
+
+            if(w!=null){
+                tfTitle.setText(w.getTitle());
+                tfISBN .setText(w.getIsbn());
+                cbWorkType.setValue(w.getType());
+                tfDescription.setText(w.getDescription());
+                tfYear.setText(String.valueOf(w.getYear()));
+            }else{
+                tfTitle.clear();tfISBN.clear();cbWorkType.setValue(null);
+                tfDescription.clear();tfYear.clear();
+            }
+            if(a!=null){
+                tfFirstName.setText(a.getFirstName());
+                tfLastName .setText(a.getLastName());
+            }else{
+                tfFirstName.clear();tfLastName.clear();
+            }
+        });
+    }
+
+    
+    //Refresh the table
+    private void loadData(){
+        data.clear();
+        for(Copy c:Copy.arrayCopiesGlobal){
+            Work w=c.getWork();
+            String author = (w!=null && w.getAuthor()!=null)
+                ? w.getAuthor().getFirstName()+" "+w.getAuthor().getLastName()
+                : "";
+            data.add(new CopyEntry(
+                c.getBarcode(),
+                w!=null?w.getTitle():"",
+                author,
+                w!=null?w.getIsbn():"",
+                w!=null?w.getType():"",
+                c.getCopyPlacement()));
+        }
+    }
+
+    //-------INSERT--------
+    @FXML
+    private void handleInsert(ActionEvent ev){
+        String bc  = tfBarcode.getText().trim();
+        String ttl = tfTitle  .getText().trim();
+        if(bc.isBlank()||ttl.isBlank()){err("Barcode & Title required");return;}
+        if(Copy.arrayCopiesGlobal.stream().anyMatch(c->c.getBarcode().equals(bc))){
+            err("Barcode already exists");return;}
+
+        int yr=parseYear(); if(yr<0)return;
+        String type = cbWorkType.getValue();
+        if(type==null){err("Select Work Type");return;}
+        String isbn=tfISBN.getText().trim();
+        if( requiresISBN(type) && isbn.isEmpty()){
+            err("ISBN is required for "+type+".");return;}
+
+        String fn=tfFirstName.getText().trim(), ln=tfLastName.getText().trim();
+        String desc=tfDescription.getText().trim();
+        boolean isRef=cbIsReference.isSelected();
+        String place=tfPlacement.getText().trim();
+
+        try(Connection conn=DbUtil.getConnection()){
+            conn.setAutoCommit(false);
+
+            
+            int authorId;
+            try(PreparedStatement ps=conn.prepareStatement(
+                "SELECT AuthorID FROM Author WHERE FirstName=? AND LastName=?")){
+                ps.setString(1,fn); ps.setString(2,ln);
+                ResultSet rs=ps.executeQuery();
+                if(rs.next()) authorId=rs.getInt(1);
+                else{
+                    try(PreparedStatement ins=conn.prepareStatement(
+                        "INSERT INTO Author (FirstName,LastName) VALUES (?,?)",
+                        Statement.RETURN_GENERATED_KEYS)){
+                        ins.setString(1,fn);ins.setString(2,ln);ins.executeUpdate();
+                        ResultSet k=ins.getGeneratedKeys();k.next();
+                        authorId=k.getInt(1);
+                    }
+                }
+            }
+
+            // work insert
+            int workId;
+            try(PreparedStatement ins=conn.prepareStatement(
+                "INSERT INTO Work (WorkTitle,ISBN,WorkType,WorkDesc,Year) VALUES (?,?,?,?,?)",
+                Statement.RETURN_GENERATED_KEYS)){
+                ins.setString(1,ttl);ins.setString(2,isbn);ins.setString(3,type);
+                ins.setString(4,desc);ins.setInt(5,yr);
+                ins.executeUpdate();
+                ResultSet k=ins.getGeneratedKeys();k.next();
+                workId=k.getInt(1);
+            }
+            
+            
+            try(PreparedStatement link=conn.prepareStatement(
+                "INSERT INTO WorkAuthor (WorkID,AuthorID) VALUES (?,?)")){
+                link.setInt(1,workId);link.setInt(2,authorId);link.executeUpdate();
+            }
+            
+            try(PreparedStatement ins=conn.prepareStatement(
+                "INSERT INTO Copy (CopyBarcode,WorkID,IsReference,CopyStatus,CopyPlacement) "
+              +"VALUES (?,?,?,?,?)")){
+                ins.setString(1,bc);ins.setInt(2,workId);ins.setBoolean(3,isRef);
+                ins.setString(4,"available");ins.setString(5,place);
+                ins.executeUpdate();
+            }
+            conn.commit();
+
+            
+            Author aObj=new Author(authorId,fn,ln);
+            Work   wObj=new Work(workId,ttl,isbn,type,desc,aObj,yr);
+            Copy   cObj=new Copy(-1,bc,wObj,isRef,"available",place);
+            Author.arrayAuthorsGlobal.add(aObj);
+            Work  .arrayWorksGlobal  .add(wObj);
+            Copy  .arrayCopiesGlobal .add(cObj);
+            loadData(); clear();
+        }catch(SQLException e){e.printStackTrace();err(e.getMessage());}
+    }
+
+    /* ---------- UPDATE ---------- */
+    @FXML
+    private void handleUpdate(MouseEvent ev){
+        CopyEntry sel=tvCRUD.getSelectionModel().getSelectedItem();
+        if(sel==null){err("Select a copy to update");return;}
+
+        Copy target=Copy.arrayCopiesGlobal.stream()
+            .filter(c->c.getBarcode().equals(sel.getBarcode()))
+            .findFirst().orElse(null);
+        if(target==null){err("Copy not found");return;}
+
+        String newBC  = tfBarcode.getText().trim();
+        String newTTL = tfTitle  .getText().trim();
+        if(newBC.isBlank()||newTTL.isBlank()){err("Barcode & Title required");return;}
+        if(!newBC.equals(sel.getBarcode()) &&
+           Copy.arrayCopiesGlobal.stream().anyMatch(c->c.getBarcode().equals(newBC))){
+            err("Barcode already exists");return;}
+
+        int newYr=parseYear(); if(newYr<0)return;
+        String newType=cbWorkType.getValue();
+        if(newType==null){err("Select Work Type");return;}
+        String newISBN=tfISBN.getText().trim();
+        if( requiresISBN(newType) && newISBN.isEmpty()){
+            err("ISBN is required for "+newType+".");return;}
+
+        String newFN=tfFirstName.getText().trim(), newLN=tfLastName.getText().trim();
+        String newDesc=tfDescription.getText().trim();
+        boolean newIsRef=cbIsReference.isSelected();
+        String newPlace =tfPlacement.getText().trim();
+
+        Work w=target.getWork(); Author oldA=w.getAuthor();
+
+        try(Connection conn=DbUtil.getConnection()){
+            conn.setAutoCommit(false);
+
+            
+            int authorId;
+            if(oldA!=null && oldA.getFirstName().equals(newFN) && oldA.getLastName().equals(newLN)){
+                authorId=oldA.getAuthorID();
+                try(PreparedStatement ps=conn.prepareStatement(
+                    "UPDATE Author SET FirstName=?,LastName=? WHERE AuthorID=?")){
+                    ps.setString(1,newFN);ps.setString(2,newLN);ps.setInt(3,authorId);
+                    ps.executeUpdate();
+                }
+            }else{
+                
+                try(PreparedStatement ps=conn.prepareStatement(
+                    "SELECT AuthorID FROM Author WHERE FirstName=? AND LastName=?")){
+                    ps.setString(1,newFN);ps.setString(2,newLN);
+                    ResultSet rs=ps.executeQuery();
+                    if(rs.next()) authorId=rs.getInt(1);
+                    else{
+                        try(PreparedStatement ins=conn.prepareStatement(
+                            "INSERT INTO Author (FirstName,LastName) VALUES (?,?)",
+                            Statement.RETURN_GENERATED_KEYS)){
+                            ins.setString(1,newFN);ins.setString(2,newLN);
+                            ins.executeUpdate(); ResultSet k=ins.getGeneratedKeys();k.next();
+                            authorId=k.getInt(1);
+                        }
+                    }
+                }
+                
+                try(PreparedStatement ps=conn.prepareStatement(
+                    "UPDATE WorkAuthor SET AuthorID=? WHERE WorkID=?")){
+                    ps.setInt(1,authorId);ps.setInt(2,w.getWorkID());ps.executeUpdate();
+                }
+            }
+
+            //Update work
+            try(PreparedStatement ps=conn.prepareStatement(
+                "UPDATE Work SET WorkTitle=?,ISBN=?,WorkType=?,WorkDesc=?,Year=? WHERE WorkID=?")){
+                ps.setString(1,newTTL);ps.setString(2,newISBN);ps.setString(3,newType);
+                ps.setString(4,newDesc);ps.setInt(5,newYr);ps.setInt(6,w.getWorkID());
+                ps.executeUpdate();
+            }
+
+            //Update Copy
+            try(PreparedStatement ps=conn.prepareStatement(
+                "UPDATE Copy SET CopyBarcode=?,IsReference=?,CopyPlacement=? WHERE CopyBarcode=?")){
+                ps.setString(1,newBC);ps.setBoolean(2,newIsRef);
+                ps.setString(3,newPlace);ps.setString(4,sel.getBarcode());
+                ps.executeUpdate();
+            }
+
+            conn.commit();
+
+            //Update cache
+            if(oldA==null || oldA.getAuthorID()!=authorId){
+                Author newA=new Author(authorId,newFN,newLN);
+                Author.arrayAuthorsGlobal.add(newA);
+                w.setAuthor(newA);
+            }else{
+                oldA.setFirstName(newFN); oldA.setLastName(newLN);
+            }
+
+            w.setTitle      (newTTL);
+            w.setIsbn       (newISBN);
+            w.setType       (newType);
+            w.setDescription(newDesc);
+            w.setYear       (newYr);
+
+            target.setBarcode      (newBC);
+            target.setIsReference  (newIsRef);
+            target.setCopyPlacement(newPlace);
+
+            loadData(); clear();
+        }catch(SQLException e){e.printStackTrace();err(e.getMessage());}
+    }
+
+    /* ---------- DELETE ---------- */
+    @FXML
+    private void handleDelete(MouseEvent ev){
+        CopyEntry sel=tvCRUD.getSelectionModel().getSelectedItem();
+        if(sel==null){err("Select a copy to delete");return;}
+        Alert conf=new Alert(Alert.AlertType.CONFIRMATION,
+            "Delete copy \""+sel.getBarcode()+"\" ?",ButtonType.YES,ButtonType.NO);
+        conf.setHeaderText(null); conf.showAndWait();
+        if(conf.getResult()!=ButtonType.YES)return;
+
+        try(Connection conn=DbUtil.getConnection();
+            PreparedStatement ps=conn.prepareStatement(
+                "DELETE FROM Copy WHERE CopyBarcode=?")){
+            ps.setString(1,sel.getBarcode()); ps.executeUpdate();
+        }catch(SQLException e){e.printStackTrace();err(e.getMessage());return;}
+
+        Copy.arrayCopiesGlobal.removeIf(c->c.getBarcode().equals(sel.getBarcode()));
         loadData();
     }
 
-    private void loadData() {
-        data.clear();
-        String sql =
-  "SELECT c.CopyBarcode, w.WorkTitle, " +
-  "       CONCAT(a.FirstName,' ',a.LastName) AS author, " +
-  "       w.ISBN, w.WorkType, c.CopyPlacement " +
-  "FROM Copy c " +
-  "JOIN Work w       ON c.WorkID   = w.WorkID " +
-  "JOIN WorkAuthor wa ON w.WorkID   = wa.WorkID " +
-  "JOIN Author a     ON wa.AuthorID = a.AuthorID";
-
-try (var conn = DbUtil.getConnection();
-     var ps   = conn.prepareStatement(sql);
-     var rs   = ps.executeQuery())
-{
-    while (rs.next()) {
-        data.add(new CopyEntry(
-            rs.getString("CopyBarcode"),
-            rs.getString("WorkTitle"),
-            rs.getString("author"),
-            rs.getString("ISBN"),
-            rs.getString("WorkType"),
-            rs.getString("CopyPlacement")
-        ));
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+    //Return
+    @FXML private void handleReturn(MouseEvent ev){
+        ((Button)ev.getSource()).getScene().getWindow().hide();
     }
 
-    @FXML
-private void handleInsert(ActionEvent ev) {
-  // 1) pull every field
-  String firstName = tfFirstName.getText().trim();
-  String lastName  = tfLastName.getText().trim();
-  String barcode   = tfBarcode.getText().trim();
-  String title     = tfTitle.getText().trim();
-   String yearText  = tfYear      .getText().trim();
-  String isbn      = tfISBN.getText().trim();
-  String type      = cbWorkType.getValue();
-  String placement = tfPlacement.getText().trim();
-  String desc      = tfDescription.getText().trim();
-  boolean isRef    = cbIsReference.isSelected();
-  
-  // 2) parse & validate Year
-  int year;
-  try {
-    year = Integer.parseInt(yearText);
-  } catch (NumberFormatException ex) {
-    showError("Year must be a number.");
-    return;
-  }
+    //Helpers
+    private static boolean requiresISBN(String type){
+        return "course literature".equals(type)||"other literature".equals(type);
+    }
+    private int parseYear(){
+        if(tfYear.getText().isBlank())return 0;
+        try{return Integer.parseInt(tfYear.getText().trim());}
+        catch(NumberFormatException e){err("Year must be a number");return -1;}
+    }
+
+
+    private void err(String m){
+        new Alert(Alert.AlertType.ERROR,m,ButtonType.OK).showAndWait();}
     
-
-  // --- after you read String isbn and String type ---
-if (("course literature".equals(type) || "other literature".equals(type))
-    && isbn.isEmpty()) {
-    showError("ISBN is required for course literature and other literature.");
-    return;
-}
-
-
-
-   // 3) upsert the Work & Author (new signature!)
-  int workId = findOrCreateWork(
-     title, firstName, lastName,
-     isbn, type, desc, year
-  );
-  if (workId < 0) return;   // user fixed whatever error you showed
-
-
-
-  // 4) insert the Copy row (with isReference and placement)
-  String sql =
-    "INSERT INTO Copy " +
-    "  (CopyBarcode, WorkID, IsReference, CopyStatus, CopyPlacement) " +
-    "VALUES (?, ?, ?, 'available', ?)";
-  try (Connection conn = DbUtil.getConnection();
-       PreparedStatement ps = conn.prepareStatement(sql))
-  {
-  ps.setString(1, barcode);
-    ps.setInt   (2, workId);
-    ps.setBoolean(3, isRef);
-    ps.setString(4, placement);
     
-    // 2) attempt insert, catching duplicate‐barcode
-    try {
-      ps.executeUpdate();
-    } catch (SQLException ex) {
-      if (ex.getErrorCode() == 1062) {            // MySQL duplicate-key
-        showError("That barcode already exists.");
-        return;
-      } else {
-        throw ex;  // re-throw anything else
-      }
+    private void clear(){
+        tfBarcode.clear();tfTitle.clear();tfISBN.clear();tfPlacement.clear();
+        tfFirstName.clear();tfLastName.clear();tfYear.clear();tfDescription.clear();
+        cbWorkType.setValue(null);cbIsReference.setSelected(false);
     }
-
-} catch (SQLException ex) {
-    ex.printStackTrace();
-    showError("Error inserting copy: " + ex.getMessage());
-    return;
-}
-
-  // 4) refresh the table
-  loadData();
-}
-
-
-   @FXML
-private void handleUpdate(MouseEvent ev) {
-    
-    CopyEntry sel = tvCRUD.getSelectionModel().getSelectedItem();
-    if (sel == null) {
-        showError("Please select a copy to update.");
-        return;
-    }
-
-    
-    String oldBarcode   = sel.getBarcode();                 
-    String newBarcode   = tfBarcode.getText().trim();
-    boolean isRef       = cbIsReference.isSelected();
-    String placement    = tfPlacement.getText().trim();
-
-    String newTitle     = tfTitle.getText().trim();
-    String newISBN      = tfISBN.getText().trim();
-    String newType      = cbWorkType.getValue();
-    String newDesc      = tfDescription.getText().trim();
-    String yearText     = tfYear.getText().trim();
-    String newFirstName = tfFirstName.getText().trim();
-    String newLastName  = tfLastName.getText().trim();
-
-    int newYear;
-    try {
-        newYear = Integer.parseInt(yearText);
-    } catch (NumberFormatException ex) {
-        showError("Year must be a number.");
-        return;
-    }
-
-    int workId   = currentWorkId;
-    int authorId = currentAuthorId;
-
-    
-    try (Connection conn = DbUtil.getConnection()) {
-        conn.setAutoCommit(false);
-
-        
-        String sqlAuthor = 
-            "UPDATE Author SET FirstName=?, LastName=? WHERE AuthorID=?";
-        try (PreparedStatement ps = conn.prepareStatement(sqlAuthor)) {
-            ps.setString(1, newFirstName);
-            ps.setString(2, newLastName);
-            ps.setInt   (3, authorId);
-            ps.executeUpdate();
-        }
-
-        
-        String sqlWork =
-            "UPDATE Work SET WorkTitle=?, ISBN=?, WorkDesc=?, WorkType=?, Year=? " +
-            "WHERE WorkID=?";
-        try (PreparedStatement ps = conn.prepareStatement(sqlWork)) {
-            ps.setString(1, newTitle);
-            ps.setString(2, newISBN);
-            ps.setString(3, newDesc);
-            ps.setString(4, newType);
-            ps.setInt   (5, newYear);
-            ps.setInt   (6, workId);
-            ps.executeUpdate();
-        }
-
-        
-        String sqlCopy =
-            "UPDATE Copy SET CopyBarcode=?, IsReference=?, CopyPlacement=? " +
-            "WHERE CopyBarcode=?";
-        try (PreparedStatement ps = conn.prepareStatement(sqlCopy)) {
-            ps.setString (1, newBarcode);
-            ps.setBoolean(2, isRef);
-            ps.setString (3, placement);
-            ps.setString (4, oldBarcode);
-            ps.executeUpdate();
-        }
-
-        conn.commit();  
-
-    } catch (SQLException ex) {
-        ex.printStackTrace();
-        showError("Error updating record: " + ex.getMessage());
-    }
-
-    
-    loadData();
-    clearForm();
-}
-
-   @FXML
-private void handleDelete(MouseEvent ev) {
-    CopyEntry sel = tvCRUD.getSelectionModel().getSelectedItem();
-    if (sel == null) {
-        showError("Please select a copy to delete.");
-        return;
-    }
-    // optional confirmation
-    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-        "Are you sure you want to delete copy “" + sel.getBarcode() + "”?",
-        ButtonType.YES, ButtonType.NO);
-    confirm.setHeaderText(null);
-    confirm.showAndWait();
-    if (confirm.getResult() != ButtonType.YES) return;
-
-    String sql = "DELETE FROM Copy WHERE CopyBarcode = ?";
-    try (Connection conn = DbUtil.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setString(1, sel.getBarcode());
-        ps.executeUpdate();
-    } catch (SQLException ex) {
-        ex.printStackTrace();
-        showError("Error deleting copy: " + ex.getMessage());
-        return;
-    }
-
-    loadData();
-    clearForm();
-}
-
-
-    @FXML
-    private void handleReturn(MouseEvent ev) throws IOException {
-        App.setRoot("StaffController");
-    }
-
-   
-
-   private int findOrCreateWork(String title,
-                             String firstName,
-                             String lastName,
-                             String isbn,
-                             String type,
-                             String description, 
-                             int year)
-{
-  try (Connection conn = DbUtil.getConnection()) {
-    // 1) try select existing
-    String lookup =
-      "SELECT w.WorkID " +
-      "FROM Work w " +
-      "JOIN WorkAuthor wa ON w.WorkID=wa.WorkID " +
-      "JOIN Author a     ON wa.AuthorID=a.AuthorID " +
-      "WHERE w.WorkTitle=? AND w.ISBN=? " +
-      "  AND a.FirstName=? AND a.LastName=?";
-    try (PreparedStatement ps = conn.prepareStatement(lookup)) {
-      ps.setString(1, title);
-      ps.setString(2, isbn);
-      ps.setString(3, firstName);
-      ps.setString(4, lastName);
-      try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) return rs.getInt("WorkID");
-      }
-    }
-
-    // 2) insert Work (including WorkDesc + Year)
-    String insW =
-      "INSERT INTO Work (WorkTitle, ISBN, WorkDesc, WorkType, Year) " +
-      "VALUES (?, ?, ?, ?, ?)";
-    int workId;
-    try (PreparedStatement ps = conn.prepareStatement(
-             insW, Statement.RETURN_GENERATED_KEYS))
-    {
-      ps.setString (1, title);
-      ps.setString (2, isbn);
-      ps.setString (3, description);
-      ps.setString (4, type);
-      ps.setInt    (5, year);
-      ps.executeUpdate();
-      try (ResultSet keys = ps.getGeneratedKeys()) {
-        keys.next();
-        workId = keys.getInt(1);
-      }
-    } catch (SQLException e) {
-      showError("Invalid work-type or data overflow.\n"
-              + "Please check your Type, Description length, and Year.");
-      return -1;
-    }
-
-    // 3) author upsert
-    int authorId;
-    String findA = "SELECT AuthorID FROM Author WHERE FirstName=? AND LastName=?";
-    try (PreparedStatement ps = conn.prepareStatement(findA)) {
-      ps.setString(1, firstName);
-      ps.setString(2, lastName);
-      try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-          authorId = rs.getInt("AuthorID");
-        } else {
-          try (PreparedStatement insA = conn.prepareStatement(
-                   "INSERT INTO Author (FirstName, LastName) VALUES (?, ?)",
-                   Statement.RETURN_GENERATED_KEYS))
-          {
-            insA.setString(1, firstName);
-            insA.setString(2, lastName);
-            insA.executeUpdate();
-            try (ResultSet k2 = insA.getGeneratedKeys()) {
-              k2.next();
-              authorId = k2.getInt(1);
-            }
-          }
-        }
-      }
-    }
-
-    // 4) link WorkAuthor
-    try (PreparedStatement link = conn.prepareStatement(
-           "INSERT INTO WorkAuthor (WorkID, AuthorID) VALUES (?, ?)"))
-    {
-      link.setInt(1, workId);
-      link.setInt(2, authorId);
-      link.executeUpdate();
-    }
-
-    return workId;
-
-  } catch (SQLException ex) {
-    throw new RuntimeException(ex);
-  }
-}
-
-/** display a simple error dialog */
-private void showError(String message) {
-  Alert alert = new Alert(Alert.AlertType.ERROR);
-  alert.setHeaderText(null);
-  alert.setContentText(message);
-  alert.showAndWait();
-}
-
-/** clear every field back to its “empty” state */
-private void clearForm() {
-    tfBarcode.clear();
-    tfTitle.clear();
-    tfISBN.clear();
-    tfPlacement.clear();
-    tfYear.clear();
-    cbWorkType.setValue(null);
-    tfFirstName.clear();
-    tfLastName.clear();
-    tfDescription.clear();
-    cbIsReference.setSelected(false);
-    tfFirstName.clear();
-    tfLastName.clear();
-}
-
 }
