@@ -17,13 +17,13 @@ public class Work {
     private Author author;
     private int year;
 
-    public Work(int workID, String title, String isbn, String type, String description, Author author, int year) {
+    public Work(int workID, String title, String isbn, String type, String description, int year) {
         this.workID = workID;
         this.title = title;
         this.isbn = isbn;
         this.type = type;
         this.description = description;
-        this.author = author;
+        //this.author = author;
         this.year = year;
     }
     
@@ -48,7 +48,7 @@ public class Work {
                 String type = resultSetWork.getString("WorkType");
                 String description = resultSetWork.getString("WorkDesc");
                 int year = resultSetWork.getInt("Year");
-                Work work = new Work(workID, title, isbn, type, description, author, year);
+                Work work = new Work(workID, title, isbn, type, description, year);
                 arrayWorks.add(work);
                 System.out.println(work.workID);
             }

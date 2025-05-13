@@ -36,8 +36,9 @@ public class Copy {
                 ResultSet resultSet = connection.createStatement().executeQuery("select * from Copy");
                 while(resultSet.next()){
                     int copyID = resultSet.getInt("CopyID");
-                    String barcode = resultSet.getString("Barcode");
+                    String barcode = resultSet.getString("CopyBarcode");
                     Work work = findCopyWork(resultSet.getInt("WorkID"));
+                    System.out.println(work);
                     Boolean isReference = resultSet.getBoolean("IsReference");
                     String copyStatus = resultSet.getString("CopyStatus");
                     String copyPlacement = resultSet.getString("CopyPlacement");
@@ -47,6 +48,7 @@ public class Copy {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+                System.out.println("error copy");
         }
 
             
@@ -55,11 +57,14 @@ public class Copy {
 
     //finding the work that the copy is connected to
     public static Work findCopyWork(int id) {
+        int index = 0;
         Work copyWork = null;
-        for (Work i : Work.arrayWorksGlobal) {
-            if (Work.getWorkID(i) == id) {
-                copyWork = i;
+        while (Work.arrayWorksGlobal.size() > index) {
+            if (Work.getWorkID(Work.arrayWorksGlobal.get(index)) == id) {
+                copyWork = Work.arrayWorksGlobal.get(index);
             }
+            System.out.println(Work.arrayWorksGlobal.get(index));
+            index++;
         }
         return copyWork;
     }
