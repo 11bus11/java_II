@@ -46,10 +46,11 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-        ArrayList <User> arrayUsers = User.createUsers();
+        //ArrayList <User> arrayUsers = User.createUsers();
         //System.out.println(arrayUsers);
         // tar bort rad för att funka 
-        isLoggedIn = arrayUsers.get(0);      
+        isLoggedIn = User.arrayUsersGlobal.get(0); 
+        System.out.println(Loan.arrayLoansGlobal);
 
         launch();
     }
