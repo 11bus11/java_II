@@ -101,7 +101,7 @@ public class Loan {
     static ArrayList <Loan> arrayLoansGlobal = createLoans();
 
     //Create a loan in the system
-    public static Loan createLoanNow(ArrayList<Copy> copies, User LoanUser) {
+    public static void createLoanNow(ArrayList<Copy> copies, User LoanUser) {
         DataSource dataSource = DbUtil.createDataSource();
         //sql for prepared statements
         String sqlLoan = "INSERT INTO Loan (UserID, BorrowDate) VALUES (?, CURRENT_TIMESTAMP())";
@@ -114,22 +114,26 @@ public class Loan {
             psLoan.setObject(1, LoanUser);
             ResultSet resultSet = psLoan.executeQuery();
             
+            int newLoanID;
             int index = 0;
             while (copies.size() > index) {
                 while (resultSet.next()) {
-                    psLoanCopy.setInt(1, resultSet.getInt("LoanID"));
+                    newLoanID = resultSet.getInt("LoanID");
+                    psLoanCopy.setInt(1, newLoanID);
                 
                 }
                 psLoanCopy.setInt(2, Copy.getCopyID(copies.get(index)));
 
                 index++;
             }
-
+            int loanID = newLoanID;
             Timestamp borrowDate = resultSet.getTimestamp("BorrowDate");
             User user = LoanUser;
-            ArrayList<Copy> copiesLoaned = findLoanCopy(resultSetLoan.getInt("LoanID"), resultSetLoanCopy);
-            Loan newLoan = new Loan(loanID, borrowDate, user, copiesLoaned);
-            
+            ArrayList<Copy> copiesLoaned = copies;
+            Loan loan = new Loan(loanID, borrowDate, user, copiesLoaned);
+            System.out.println(arrayLoansGlobal.size() + " before");
+            Loan.arrayLoansGlobal.add(loan);
+            System.out.println(arrayLoansGlobal.size() + " after");
 
             
             
@@ -143,8 +147,6 @@ public class Loan {
         User user = findLoanUser(resultSetLoan.getInt("UserID"));
         ArrayList<Copy> copiesLoaned = findLoanCopy(resultSetLoan.getInt("LoanID"), resultSetLoanCopy);
         Loan newLoan = new Loan(loanID, borrowDate, user, copiesLoaned);
-
-        return newLoan;
         }
     }
 }
