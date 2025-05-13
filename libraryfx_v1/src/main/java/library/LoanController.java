@@ -2,6 +2,7 @@
 package library;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -65,6 +66,9 @@ public class LoanController {
     private final ObservableList<CopyForTable> data =
       FXCollections.observableArrayList();
 
+
+    ArrayList<Copy> loanPrel = new ArrayList<Copy>();
+
     @FXML
     private void initialize() {
         // bind columns
@@ -97,14 +101,13 @@ public class LoanController {
 
     @FXML
     void handleInsert(MouseEvent event) {
-
         addTableElement();
         
     }
 
     @FXML
     void handleLoan(MouseEvent event) {
-
+        Loan.createLoanNow(loanPrel, App.isLoggedIn);
     }
 
     public void addTableElement() {
@@ -133,6 +136,7 @@ public class LoanController {
         }
         System.out.println(data);
         tvWork.setItems(data);
+        loanPrel.add(currCopy);
     }
         //find the correct thing
 

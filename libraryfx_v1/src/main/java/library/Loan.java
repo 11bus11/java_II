@@ -1,6 +1,7 @@
 package library;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -12,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import javax.sql.DataSource;
+import javax.xml.transform.Result;
 
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -97,4 +99,54 @@ public class Loan {
     }
     
     static ArrayList <Loan> arrayLoansGlobal = createLoans();
+
+    //Create a loan in the system
+    public static void createLoanNow(ArrayList<Copy> copies, User LoanUser) {
+        DataSource dataSource = DbUtil.createDataSource();
+        //sql for prepared statements
+        String sqlLoan = "INSERT INTO Loan (UserID, BorrowDate) VALUES (?, CURRENT_TIMESTAMP())";
+        String sqlLoanCopy = "INSERT INTO LoanCopy (LoanID, CopyID, IsReturned) VALUES (?, ?, False)";
+        String sqlCopyStatus = ""; //skriva
+
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement psLoan = connection.prepareStatement(sqlLoan);
+            PreparedStatement psLoanCopy = connection.prepareStatement(sqlLoanCopy);
+            psLoan.setObject(1, LoanUser);
+            ResultSet resultSet = psLoan.executeQuery();
+            
+            int newLoanID;
+            int index = 0;
+            while (copies.size() > index) {
+                while (resultSet.next()) {
+                    newLoanID = resultSet.getInt("LoanID");
+                    psLoanCopy.setInt(1, newLoanID);
+                
+                }
+                psLoanCopy.setInt(2, Copy.getCopyID(copies.get(index)));
+
+                index++;
+            }
+            int loanID = newLoanID;
+            Timestamp borrowDate = resultSet.getTimestamp("BorrowDate");
+            User user = LoanUser;
+            ArrayList<Copy> copiesLoaned = copies;
+            Loan loan = new Loan(loanID, borrowDate, user, copiesLoaned);
+            System.out.println(arrayLoansGlobal.size() + " before");
+            Loan.arrayLoansGlobal.add(loan);
+            System.out.println(arrayLoansGlobal.size() + " after");
+
+            
+            
+
+        
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Timestamp borrowDate = resultSetLoan.getTimestamp("BorrowDate");
+        User user = findLoanUser(resultSetLoan.getInt("UserID"));
+        ArrayList<Copy> copiesLoaned = findLoanCopy(resultSetLoan.getInt("LoanID"), resultSetLoanCopy);
+        Loan newLoan = new Loan(loanID, borrowDate, user, copiesLoaned);
+        }
+    }
 }
