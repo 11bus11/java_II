@@ -27,6 +27,7 @@ public class Copy {
 
     public static int getCopyID(Copy copy)       { return copy.copyID; }
     public static boolean getIsReference(Copy copy)       { return copy.isReference; }
+    public static String getBarcode(Copy copy)       { return copy.barcode; }
     
     //created copies from the database
     public static ArrayList<Copy> createCopies() {

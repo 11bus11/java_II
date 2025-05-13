@@ -5,11 +5,17 @@ import java.io.IOException;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 
 public class LoanController {
@@ -70,14 +76,11 @@ public class LoanController {
 
         tvWork.setItems(data);
         tvWork.getSelectionModel().selectedItemProperty().addListener((obs, old, sel) -> {
-    if (sel == null) return;
+        if (sel == null) {
+            return;}
 
-    // 1) the fields you already do:
-    tfBarcode .setText(sel.getBarcode());
-    tfTitle   .setText(sel.getTitle());
-    tfISBN    .setText(sel.getIsbn());
-    cbWorkType.setValue(sel.getWorkType());
-    tfPlacement.setText(sel.getPlacement());
+        })
+     }
 
     @FXML
     void goToHome(MouseEvent event)throws IOException {
@@ -113,12 +116,26 @@ public class LoanController {
     public void addTableElement(String barcode) {
         String inputBarcode   = tfBarcode.getText().trim();
         int index = 0;
-        while (Copy.arrayCopiesGlobal.size() <= index)
-        if (Copy.getIsReference(Copy.arrayCopiesGlobal.get(index))) {
-            showError("ISBN is required for course literature and other literature.");
+        Copy currCopy = null;
+        while (Copy.arrayCopiesGlobal.size() <= index) {
+            if (inputBarcode.equals(Copy.getBarcode(Copy.arrayCopiesGlobal.get(index)))) {
+                if (Copy.getIsReference(Copy.arrayCopiesGlobal.get(index))) {
+                //showError("ISBN is required for course literature and other literature.");
+                System.out.println("reference literature");
+                } else {
+                    currCopy = Copy.arrayCopiesGlobal.get(index);
+                }
+              
+            }
+            return;
         }
-        return;
-        
+        if (currCopy != null) {
+            
+            cbIsReference.setSelected(rs.getBoolean("IsReference"));
+            tfFirstName  .setText(rs.getString("FirstName"));
+            tfLastName   .setText(rs.getString("LastName"));
+        }
+
 }
         //find the correct thing
     }
