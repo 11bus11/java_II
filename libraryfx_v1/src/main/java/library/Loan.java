@@ -3,8 +3,12 @@ package library;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import javax.sql.DataSource;
@@ -13,11 +17,11 @@ import com.zaxxer.hikari.HikariDataSource;
 
 public class Loan {
     int loanID;
-    LocalDateTime borrowDate;
+    Timestamp borrowDate;
     User user;
     ArrayList<Copy> copiesLoaned;
 
-    public Loan(int loanID, LocalDateTime borrowDate, User user, ArrayList<Copy> copiesLoaned) {
+    public Loan(int loanID, Timestamp borrowDate, User user, ArrayList<Copy> copiesLoaned) {
         this.loanID = loanID;
         this.borrowDate = borrowDate;
         this.user = user;
@@ -32,16 +36,18 @@ public class Loan {
         try (Connection connection = dataSource.getConnection()) {
             
             ResultSet resultSetLoan= connection.createStatement().executeQuery("select * from Loan");
+            ResultSet resultSetLoanCopy= connection.createStatement().executeQuery("select * from LoanCopy");
             while(resultSetLoan.next()){
                 int loanID = resultSetLoan.getInt("LoanID");
-                LocalDateTime borrowDate = resultSetLoan.getTimestamp("BorrowDate");
+                Timestamp borrowDate = resultSetLoan.getTimestamp("BorrowDate");
                 User user = findLoanUser(resultSetLoan.getInt("UserID"));
-                ArrayList<Copy> copiesLoaned = findLoanCopy(resultSetLoan.getInt("LoanID"));
+                ArrayList<Copy> copiesLoaned = findLoanCopy(resultSetLoan.getInt("LoanID"), resultSetLoanCopy);
                 Loan loan = new Loan(loanID, borrowDate, user, copiesLoaned);
                 arrayLoans.add(loan);
                 System.out.println(loan.loanID);
             }
-                
+            resultSetLoan.close();
+            resultSetLoanCopy.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }  
@@ -61,29 +67,30 @@ public class Loan {
 
     //finding the copies that were loaned
     //not working
-    public static ArrayList<Copy> findLoanCopy(int id) {
+    public static ArrayList<Copy> findLoanCopy(int id, ResultSet resultSetLoanCopy) {
         ArrayList<Copy> arrayCopy = new ArrayList<Copy>();
         DataSource dataSource = DbUtil.createDataSource();
    
         try (Connection connection = dataSource.getConnection()) {
             
-            ResultSet resultSetLoanCopy= connection.createStatement().executeQuery("select * from Loan");
             while(resultSetLoanCopy.next()){
                 int loanID = resultSetLoanCopy.getInt("LoanID");
                 if (loanID == id) {
                     int copyID = resultSetLoanCopy.getInt("CopyID");
                     int index = 0;
-                    for (Copy i : Copy.arrayCopiesGlobal) {
-                        if (Copy.getCopyID(i) == copyID) {
+                    while (Copy.arrayCopiesGlobal.size() > index) {
+                        if (Copy.getCopyID(Copy.arrayCopiesGlobal.get(index)) == copyID) {
                             arrayCopy.add(Copy.arrayCopiesGlobal.get(index));
                         }
+                        System.out.println(Copy.getCopyID(Copy.arrayCopiesGlobal.get(index)) + " " + copyID);
                         index++;
                     }
                 }
             
             } 
+
         } catch (Exception e) {
-            System.out.println("error");
+            System.out.println("error findLoanCopy");
         }
                        
         return arrayCopy;
@@ -91,5 +98,3 @@ public class Loan {
     
     static ArrayList <Loan> arrayLoansGlobal = createLoans();
 }
-
-//LocalDateTime borrowDate = LocalDateTime.now();
