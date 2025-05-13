@@ -28,10 +28,10 @@ public class Work {
     }
     
     public static int getWorkID(Work work)       { return work.workID; }
-    public String getTitle()       { return title; }
-    public String getIsbn()        { return isbn; }
-    public String getType()        { return type; }
-    public String getDescription() { return description; }
+    public static String getTitle(Work work)       { return work.title; }
+    public static String getISBN(Work work)        { return work.isbn; }
+    public static String getType()        { return type; }
+    public static String getDescription() { return description; }
 
     //creating the works from database
     public static ArrayList<Work> createWorks() {
@@ -42,6 +42,7 @@ public class Work {
             
             ResultSet resultSetWork= connection.createStatement().executeQuery("select * from Work");
             ResultSet resultSetWorkAuthor= connection.createStatement().executeQuery("select * from WorkAuthor");
+            System.out.println(resultSetWork.getString("WorkTitle") + " result");
             while(resultSetWork.next()){
                 int workID = resultSetWork.getInt("WorkID");
                 String title = resultSetWork.getString("WorkTitle");
@@ -52,7 +53,7 @@ public class Work {
                 int year = resultSetWork.getInt("Year");
                 Work work = new Work(workID, title, isbn, type, description, author, year);
                 arrayWorks.add(work);
-                System.out.println(work.workID);
+                System.out.println(work.workID + " hdhhd");
             }
 
 

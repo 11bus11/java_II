@@ -28,6 +28,12 @@ public class Copy {
     public static int getCopyID(Copy copy)       { return copy.copyID; }
     public static boolean getIsReference(Copy copy)       { return copy.isReference; }
     public static String getBarcode(Copy copy)       { return copy.barcode; }
+    public static String getISBN(Copy copy)       { String isbn = Work.getISBN(Copy.getWork(copy));
+        return isbn; }
+    public static String getTitle(Copy copy) { 
+        String title = Work.getTitle(Copy.getWork(copy));
+        return title; }
+    public static Work getWork(Copy copy)       { return copy.work; }
     
     //created copies from the database
     public static ArrayList<Copy> createCopies() {

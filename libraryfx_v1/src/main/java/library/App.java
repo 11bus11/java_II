@@ -51,7 +51,7 @@ public class App extends Application {
         // tar bort rad för att funka 
         isLoggedIn = User.arrayUsersGlobal.get(0); 
         //System.out.println(Loan.arrayLoansGlobal.get(0).copiesLoaned + " " + Loan.arrayLoansGlobal.get(0).borrowDate);
-        //System.out.println(Author.arrayAuthorsGlobal);
+        System.out.println(Work.arrayWorksGlobal + " hfhfhf");
 
         launch();
     }

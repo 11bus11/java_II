@@ -48,7 +48,7 @@ public class User {
                     String userType = resultSet.getString("UserType");
                     User user = new User(userID, firstName, lastName, email, password, userType);
                     arrayUsers.add(user);
-                    System.out.println(user.lastName);
+                    //System.out.println(user.lastName);
                 }
                 
             } catch (SQLException e) {

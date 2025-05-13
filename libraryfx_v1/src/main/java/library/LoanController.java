@@ -42,16 +42,16 @@ public class LoanController {
     private TableColumn<?, ?> colAuthor;
 
     @FXML
-    private TableColumn<?, ?> colBarcode;
+    private TableColumn<CopyForTable, String> colBarcode;
 
     @FXML
-    private TableColumn<?, ?> colISBN;
+    private TableColumn<CopyForTable, String> colISBN;
 
     @FXML
     private TableColumn<?, ?> colStatus;
 
     @FXML
-    private TableColumn<?, ?> colTitle;
+    private TableColumn<CopyForTable, String> colTitle;
 
     @FXML
     private TableColumn<?, ?> colWorkType;
@@ -60,9 +60,9 @@ public class LoanController {
     private TextField tfBarcode;
 
     @FXML
-    private TableView<?> tvWork;
+    private TableView<CopyForTable> tvWork;
 
-    private final ObservableList<Copy> data =
+    private final ObservableList<CopyForTable> data =
       FXCollections.observableArrayList();
 
     @FXML
@@ -73,13 +73,6 @@ public class LoanController {
         colTitle    .setCellValueFactory(new PropertyValueFactory<>("title"));
         colAuthor   .setCellValueFactory(new PropertyValueFactory<>("author"));
         colISBN     .setCellValueFactory(new PropertyValueFactory<>("isbn"));
-
-        tvWork.setItems(data);
-        tvWork.getSelectionModel().selectedItemProperty().addListener((obs, old, sel) -> {
-        if (sel == null) {
-            return;}
-
-        })
      }
 
     @FXML
@@ -106,6 +99,7 @@ public class LoanController {
     void handleInsert(MouseEvent event) {
 
         addTableElement();
+        
     }
 
     @FXML
@@ -113,34 +107,39 @@ public class LoanController {
 
     }
 
-    public void addTableElement(String barcode) {
+    public void addTableElement() {
         String inputBarcode   = tfBarcode.getText().trim();
         int index = 0;
         Copy currCopy = null;
-        while (Copy.arrayCopiesGlobal.size() <= index) {
+        while (Copy.arrayCopiesGlobal.size() > index) {
             if (inputBarcode.equals(Copy.getBarcode(Copy.arrayCopiesGlobal.get(index)))) {
                 if (Copy.getIsReference(Copy.arrayCopiesGlobal.get(index))) {
                 //showError("ISBN is required for course literature and other literature.");
                 System.out.println("reference literature");
                 } else {
                     currCopy = Copy.arrayCopiesGlobal.get(index);
+                    System.out.println(currCopy + " currCopy");
                 }
               
             }
-            return;
+            index++;
+            
         }
         if (currCopy != null) {
-            
-            cbIsReference.setSelected(rs.getBoolean("IsReference"));
-            tfFirstName  .setText(rs.getString("FirstName"));
-            tfLastName   .setText(rs.getString("LastName"));
+            data.add(new CopyForTable(
+                Copy.getBarcode(currCopy),
+                Work.getTitle(Copy.getWork(currCopy)), 
+                Copy.getISBN(currCopy)));
         }
-
-}
-        //find the correct thing
+        System.out.println(data);
+        tvWork.setItems(data);
     }
+        //find the correct thing
 
 }
+
+
+
 
 //@FXML private TableView<CopyEntry>           tvCRUD;
 //   
