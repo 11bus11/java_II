@@ -17,6 +17,9 @@ public class Author {
         this.firstName = firstName;
         this.lastName = lastName;
     }
+
+    public static int getAuthorID(Author author)       { return author.authorID; }
+
     //creating the authors from database
     public static ArrayList<Author> createAuthors() {
         DataSource dataSource = DbUtil.createDataSource();
@@ -30,7 +33,6 @@ public class Author {
                     String lastName = resultSet.getString("LastName");
                     Author author = new Author(authorID, firstName, lastName);
                     arrayAuthors.add(author);
-                    System.out.println(author.lastName);
                 }
                 
             } catch (SQLException e) {
@@ -40,6 +42,8 @@ public class Author {
             
         return arrayAuthors;
     }
+
+
     //Global variable containing all users
     static ArrayList <Author> arrayAuthorsGlobal = createAuthors();
 }

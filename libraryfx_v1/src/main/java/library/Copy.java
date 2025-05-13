@@ -63,7 +63,7 @@ public class Copy {
             if (Work.getWorkID(Work.arrayWorksGlobal.get(index)) == id) {
                 copyWork = Work.arrayWorksGlobal.get(index);
             }
-            System.out.println(Work.arrayWorksGlobal.get(index));
+            
             index++;
         }
         return copyWork;
