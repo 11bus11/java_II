@@ -17,8 +17,6 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        stage = primaryStage;     
-        Parent root = loadFXML("Home");
         stage = primaryStage;
         Parent root = loadFXML("Home");          
         scene = new Scene(root);
@@ -47,11 +45,10 @@ public class App extends Application {
         
         Copy.arrayCopiesGlobal.size();     
 
+        if (!User.arrayUsersGlobal.isEmpty())
+        //Gör till kommentar om Log in ska fungera
             isLoggedIn = User.arrayUsersGlobal.get(0);   
 
-        HikariDataSource ds = new HikariDataSource();
-        ds.setJdbcUrl(String.format("jdbc:mysql://address=(host=mysql-eebfafa-library1.j.aivencloud.com)(port=27035)(user=avnadmin)(password=%s)(ssl-mode=REQUIRED)/defaultdb", password));
-        return ds;
         launch();
     }
 }
