@@ -54,6 +54,7 @@ public class Copy {
                     arrayCopies.add(copy);
                     System.out.println(copy.barcode);
                 }
+                resultSet.close();
             } catch (SQLException e) {
                 e.printStackTrace();
                 System.out.println("error copy");

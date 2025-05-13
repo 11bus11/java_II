@@ -37,19 +37,19 @@ public class Work {
     public static ArrayList<Work> createWorks() {
         DataSource dataSource = DbUtil.createDataSource();
         ArrayList <Work> arrayWorks = new ArrayList<Work>();
+        
             
         try (Connection connection = dataSource.getConnection()) {
             
             ResultSet resultSetWork= connection.createStatement().executeQuery("select * from Work");
-            ResultSet resultSetWorkAuthor= connection.createStatement().executeQuery("select * from WorkAuthor");
-            System.out.println(resultSetWork.getString("WorkTitle") + " result");
+            ResultSet resultSetAuthor= connection.createStatement().executeQuery("select * from WorkAuthor");
             while(resultSetWork.next()){
                 int workID = resultSetWork.getInt("WorkID");
                 String title = resultSetWork.getString("WorkTitle");
                 String isbn = resultSetWork.getString("ISBN");
                 String type = resultSetWork.getString("WorkType");
                 String description = resultSetWork.getString("WorkDesc");
-                ArrayList<Author> author = findAuthors(resultSetWork.getInt("AuthorID"), resultSetWorkAuthor);
+                ArrayList<Author> author = findAuthors(resultSetWork.getInt("WorkID"), resultSetAuthor);
                 int year = resultSetWork.getInt("Year");
                 Work work = new Work(workID, title, isbn, type, description, author, year);
                 arrayWorks.add(work);
@@ -65,11 +65,10 @@ public class Work {
     }
 
      public static ArrayList<Author> findAuthors(int id, ResultSet resultSetAuthor) {
+        
         ArrayList<Author> arrayAuthor = new ArrayList<Author>();
         DataSource dataSource = DbUtil.createDataSource();
-   
         try (Connection connection = dataSource.getConnection()) {
-            
             while(resultSetAuthor.next()){
                 int workID = resultSetAuthor.getInt("WorkID");
                 if (workID == id) {
@@ -83,12 +82,12 @@ public class Work {
                         index++;
                     }
                 }
-            
+                resultSetAuthor.close();
             } 
         } catch (Exception e) {
             System.out.println("error findAuthor");
+            e.printStackTrace();
         }
-                       
         return arrayAuthor;
     }
 

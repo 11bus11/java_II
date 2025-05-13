@@ -46,7 +46,8 @@ public class Loan {
                 arrayLoans.add(loan);
                 System.out.println(loan.loanID);
             }
-                
+            resultSetLoan.close();
+            resultSetLoanCopy.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }  
@@ -87,6 +88,7 @@ public class Loan {
                 }
             
             } 
+
         } catch (Exception e) {
             System.out.println("error findLoanCopy");
         }
