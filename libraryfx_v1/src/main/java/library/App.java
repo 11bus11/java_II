@@ -1,11 +1,6 @@
 package library;
 
 import java.io.IOException;
-import java.util.ArrayList;
-
-import javax.sql.DataSource;
-
-import com.zaxxer.hikari.HikariDataSource;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -13,9 +8,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-/**
- * JavaFX App
- */
 public class App extends Application {
 
     public static User isLoggedIn = null;
@@ -27,41 +19,39 @@ public class App extends Application {
     public void start(Stage primaryStage) throws IOException {
         stage = primaryStage;     
         Parent root = loadFXML("Home");
-        scene = new Scene(root);  
+        stage = primaryStage;
+        Parent root = loadFXML("Home");          
+        scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Library");
-        stage.sizeToScene();      
+        stage.sizeToScene();
         stage.show();
     }
 
     public static void setRoot(String fxml) throws IOException {
-        Parent root = loadFXML(fxml);
-        scene.setRoot(root);
-        stage.sizeToScene();      
+        scene.setRoot(loadFXML(fxml));
+        stage.sizeToScene();
     }
 
     private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
-        return fxmlLoader.load();
+        FXMLLoader fl = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
+        return fl.load();
     }
 
     public static void main(String[] args) {
-        ArrayList <User> arrayUsers = User.createUsers();
-        //System.out.println(arrayUsers);
-        // tar bort rad för att funka 
-        isLoggedIn = arrayUsers.get(0);      
+        
+        User  .createUsers();              
+        Author.createAuthors();            
+        Work  .createWorks();             
 
-        launch();
-    }
+        
+        Copy.arrayCopiesGlobal.size();     
 
-    
+            isLoggedIn = User.arrayUsersGlobal.get(0);   
 
-    public static DataSource createDataSource() {
-        String password = Secret.Password();
         HikariDataSource ds = new HikariDataSource();
         ds.setJdbcUrl(String.format("jdbc:mysql://address=(host=mysql-eebfafa-library1.j.aivencloud.com)(port=27035)(user=avnadmin)(password=%s)(ssl-mode=REQUIRED)/defaultdb", password));
         return ds;
+        launch();
     }
-
-    
 }
