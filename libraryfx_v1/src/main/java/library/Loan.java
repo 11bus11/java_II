@@ -34,9 +34,8 @@ public class Loan {
             ResultSet resultSetLoan= connection.createStatement().executeQuery("select * from Loan");
             while(resultSetLoan.next()){
                 int loanID = resultSetLoan.getInt("LoanID");
-                LocalDateTime borrowDate = LocalDateTime.now();
+                LocalDateTime borrowDate = resultSetLoan.getTimestamp("BorrowDate");
                 User user = findLoanUser(resultSetLoan.getInt("UserID"));
-                //fundera -->
                 ArrayList<Copy> copiesLoaned = findLoanCopy(resultSetLoan.getInt("LoanID"));
                 Loan loan = new Loan(loanID, borrowDate, user, copiesLoaned);
                 arrayLoans.add(loan);
@@ -63,13 +62,34 @@ public class Loan {
     //finding the copies that were loaned
     //not working
     public static ArrayList<Copy> findLoanCopy(int id) {
-        ArrayList<Copy> loanCopy = new ArrayList<Copy>();
-        for (Copy i : Copy.createCopies()) {
-            if (Copy.getCopyID(i) == id) {
-                loanCopy.add(i);
-            }
+        ArrayList<Copy> arrayCopy = new ArrayList<Copy>();
+        DataSource dataSource = DbUtil.createDataSource();
+   
+        try (Connection connection = dataSource.getConnection()) {
+            
+            ResultSet resultSetLoanCopy= connection.createStatement().executeQuery("select * from Loan");
+            while(resultSetLoanCopy.next()){
+                int loanID = resultSetLoanCopy.getInt("LoanID");
+                if (loanID == id) {
+                    int copyID = resultSetLoanCopy.getInt("CopyID");
+                    int index = 0;
+                    for (Copy i : Copy.arrayCopiesGlobal) {
+                        if (Copy.getCopyID(i) == copyID) {
+                            arrayCopy.add(Copy.arrayCopiesGlobal.get(index));
+                        }
+                        index++;
+                    }
+                }
+            
+            } 
+        } catch (Exception e) {
+            System.out.println("error");
         }
-        return loanCopy;
+                       
+        return arrayCopy;
     }
     
+    static ArrayList <Loan> arrayLoansGlobal = createLoans();
 }
+
+//LocalDateTime borrowDate = LocalDateTime.now();
