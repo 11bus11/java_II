@@ -19,7 +19,7 @@ public class Work {
     private Author author;   
     private int    year;
 
-    /* ---------- Construtor ---------- */
+    /* ---------- Constructor ---------- */
     public Work(int workID, String title, String isbn, String type,
                 String description, Author author, int year) {
         this.workID      = workID;
