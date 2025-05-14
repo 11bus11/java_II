@@ -18,7 +18,7 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         stage = primaryStage;
-        Parent root = loadFXML("CRUD");          
+        Parent root = loadFXML("Home");          
         scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Library");
