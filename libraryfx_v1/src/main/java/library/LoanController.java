@@ -1,155 +1,106 @@
-
 package library;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 public class LoanController {
 
+    @FXML private TextField tfBarcode;
+    @FXML private TableView<CopyForTable> tvWork;
+    @FXML private TableColumn<CopyForTable,String> colBarcode,colTitle,colAuthor,
+                                                   colISBN,colWorkType,colStatus;
+
+    private final ObservableList<CopyForTable> data = FXCollections.observableArrayList();
+
+    /* ---------- INIT ---------- */
     @FXML
-    private Button btnDelete;
+    private void initialize(){
+        colBarcode .setCellValueFactory(new PropertyValueFactory<>("barcode"));
+        colTitle   .setCellValueFactory(new PropertyValueFactory<>("title"));
+        colAuthor  .setCellValueFactory(new PropertyValueFactory<>("author"));
+        colISBN    .setCellValueFactory(new PropertyValueFactory<>("isbn"));
+        colWorkType.setCellValueFactory(new PropertyValueFactory<>("workType"));
+        colStatus  .setCellValueFactory(new PropertyValueFactory<>("status"));
 
-    @FXML
-    private Button btnHome;
-
-    @FXML
-    private Button btnInsert;
-
-    @FXML
-    private Button btnLoan;
-
-    @FXML
-    private Button btnMyLoans;
-
-    @FXML
-    private Button btnReturnLoan;
-
-    @FXML
-    private TableColumn<?, ?> colAuthor;
-
-    @FXML
-    private TableColumn<CopyForTable, String> colBarcode;
-
-    @FXML
-    private TableColumn<CopyForTable, String> colISBN;
-
-    @FXML
-    private TableColumn<?, ?> colStatus;
-
-    @FXML
-    private TableColumn<CopyForTable, String> colTitle;
-
-    @FXML
-    private TableColumn<?, ?> colWorkType;
-
-    @FXML
-    private TextField tfBarcode;
-
-    @FXML
-    private TableView<CopyForTable> tvWork;
-
-    private final ObservableList<CopyForTable> data =
-      FXCollections.observableArrayList();
-
-
-    ArrayList<Copy> loanPrel = new ArrayList<Copy>();
-
-    @FXML
-    private void initialize() {
-        // bind columns
-       
-        colBarcode  .setCellValueFactory(new PropertyValueFactory<>("barcode"));
-        colTitle    .setCellValueFactory(new PropertyValueFactory<>("title"));
-        colAuthor   .setCellValueFactory(new PropertyValueFactory<>("author"));
-        colISBN     .setCellValueFactory(new PropertyValueFactory<>("isbn"));
-     }
-
-    @FXML
-    void goToHome(MouseEvent event)throws IOException {
-        App.setRoot("Home");
+        refresh(Copy.arrayCopiesGlobal);
+        tfBarcode.setOnKeyPressed(this::enterSearch);
     }
 
-    @FXML
-    void goToReturnLoan(MouseEvent event) {
+    /* ---------- SEARCH ---------- */
+    @FXML private void handleSearch(ActionEvent e){ doSearch(); }
+    private void enterSearch(KeyEvent e){ if(e.getCode()==KeyCode.ENTER) doSearch(); }
 
+    private void doSearch(){
+        String f = tfBarcode.getText().trim();
+        List<Copy> src = f.isBlank()
+                         ? Copy.arrayCopiesGlobal
+                         : Copy.arrayCopiesGlobal.stream()
+                               .filter(c -> c.getBarcode().startsWith(f))
+                               .collect(Collectors.toList());
+        refresh(src);
     }
 
+    /* ---------- LOAN / RETURN ---------- */
     @FXML
-    void goToMyLoans(MouseEvent event)  throws IOException {
-        App.setRoot("MyLoansController");
-    }
+    private void handleLoan(MouseEvent e){
 
-    @FXML
-    void handleDelete(MouseEvent event) {
+        CopyForTable sel = tvWork.getSelectionModel().getSelectedItem();
+        if(sel == null){ alert("Selecione uma linha."); return; }
 
-    }
+        Copy copy = Copy.arrayCopiesGlobal.stream()
+                         .filter(c -> c.getBarcode().equals(sel.getBarcode()))
+                         .findFirst().orElse(null);
+        if(copy == null){ alert("Cópia não encontrada."); return; }
 
-    @FXML
-    void handleInsert(MouseEvent event) {
-        addTableElement();
-        
-    }
+        String newStatus = copy.getCopyStatus().equals("available") ? "loaned" : "available";
 
-    @FXML
-    void handleLoan(MouseEvent event) {
-        Loan.createLoanNow(loanPrel, App.isLoggedIn);
-    }
-
-    public void addTableElement() {
-        String inputBarcode   = tfBarcode.getText().trim();
-        int index = 0;
-        Copy currCopy = null;
-        while (Copy.arrayCopiesGlobal.size() > index) {
-            if (inputBarcode.equals(Copy.getBarcode(Copy.arrayCopiesGlobal.get(index)))) {
-                if (Copy.getIsReference(Copy.arrayCopiesGlobal.get(index))) {
-                //showError("ISBN is required for course literature and other literature.");
-                System.out.println("reference literature");
-                } else {
-                    currCopy = Copy.arrayCopiesGlobal.get(index);
-                    System.out.println(currCopy + " currCopy");
-                }
-              
-            }
-            index++;
-            
+        if(!CRUD.updateCopyStatus(copy.getCopyID(), newStatus)){
+            alert("Falha ao atualizar status no banco.");
+            return;
         }
-        if (currCopy != null) {
+        copy.setCopyStatus(newStatus);
+
+        if("loaned".equals(newStatus))
+            LoanUtil.registerLoan(List.of(copy), App.isLoggedIn);
+
+        refresh(Copy.arrayCopiesGlobal);
+    }
+
+    /* ---------- NAVIGATION (empty example) ---------- */
+    @FXML public void goToHome      (MouseEvent e){}
+    @FXML public void goToReturnLoan(MouseEvent e){}
+    @FXML public void goToMyLoans   (MouseEvent e){}
+
+    /* ---------- helpers ---------- */
+    private void refresh(List<Copy> src){
+        data.clear();
+        for(Copy c : src){
+            Work   w = c.getWork();
+            Author a = w!=null ? w.getAuthor() : null;
+
             data.add(new CopyForTable(
-                Copy.getBarcode(currCopy),
-                Work.getTitle(Copy.getWork(currCopy)), 
-                Copy.getISBN(currCopy)));
+                    c.getBarcode(),
+                    w!=null ? w.getTitle() : "",
+                    a!=null ? a.getFirstName()+" "+a.getLastName() : "",
+                    w!=null ? w.getIsbn()  : "",
+                    w!=null ? w.getType()  : "",
+                    c.getCopyStatus()));
         }
-        System.out.println(data);
         tvWork.setItems(data);
-        loanPrel.add(currCopy);
     }
-        //find the correct thing
-
+    private void alert(String m){ new Alert(Alert.AlertType.ERROR,m,ButtonType.OK).showAndWait(); }
 }
-
-
-
-
-//@FXML private TableView<CopyEntry>           tvCRUD;
-//   
-//    @FXML private TableColumn<CopyEntry,String>  colBarcode;
-//    @FXML private TableColumn<CopyEntry,String>  colTitle;
-//    @FXML private TableColumn<CopyEntry,String>  colAuthor;
-//    @FXML private TableColumn<CopyEntry,String>  colISBN;
-//    @FXML private TableColumn<CopyEntry,String>  colWorkType;
-//    @FXML private TableColumn<CopyEntry,String>  colPlacement;
