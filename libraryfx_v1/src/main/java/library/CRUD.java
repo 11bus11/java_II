@@ -340,7 +340,8 @@ public class CRUD {
 
 
     private void err(String m){
-        new Alert(Alert.AlertType.ERROR,m,ButtonType.OK).showAndWait();}
+        new Alert(Alert.AlertType.ERROR,m,ButtonType.OK).showAndWait();
+    }
     
     
     private void clear(){
@@ -348,4 +349,27 @@ public class CRUD {
         tfFirstName.clear();tfLastName.clear();tfYear.clear();tfDescription.clear();
         cbWorkType.setValue(null);cbIsReference.setSelected(false);
     }
+
+    /**
+     * Updates the status of a copy (used by LoanController and others).
+     * @param copyID    ID of the copy to be updated
+     * @param newStatus New status ("available", "loaned", etc)
+     * @return true if update was successful, false otherwise
+     */
+    public static boolean updateCopyStatus(int copyID, String newStatus){
+        final String SQL = "UPDATE Copy SET CopyStatus = ? WHERE CopyID = ?";
+
+        try (Connection conn = DbUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(SQL)) {
+
+            ps.setString(1, newStatus);
+            ps.setInt   (2, copyID);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
