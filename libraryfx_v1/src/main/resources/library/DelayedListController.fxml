@@ -8,16 +8,18 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="918.0" style="-fx-background-color: #0A2F52;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.SearchController">
+<Pane fx:controller="library.DelayedListController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="918.0" style="-fx-background-color: #0A2F52;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TableView fx:id="tvDelayedList" layoutX="19.0" layoutY="69.0" prefHeight="497.0" prefWidth="890.0">
+      <TableView fx:id="tvDelayed" layoutX="19.0" layoutY="69.0" prefHeight="497.0" prefWidth="890.0">
          <columns>
-            <TableColumn fx:id="colBarcode" prefWidth="191.0" text="Barcode" />
-            <TableColumn fx:id="colYear" minWidth="0.0" prefWidth="87.20002746582031" text="Due date" />
-            <TableColumn fx:id="colDaysDelayed" prefWidth="84.0" text="Days delayed" />
-            <TableColumn fx:id="colType" prefWidth="91.20001220703125" text="Type" />
-            <TableColumn fx:id="colTitle" minWidth="0.0" prefWidth="272.79998779296875" text="Title" />
-            <TableColumn fx:id="colEmail" prefWidth="161.20001220703125" text="Email" />
+            <TableColumn fx:id="colUser" text="User" />
+            <TableColumn fx:id="colCopy" text="Copy" />
+            <TableColumn fx:id="colWorkType" text="Work Type" />
+            <TableColumn fx:id="colBorrowDate" text="Borrow Date" />
+            <TableColumn fx:id="colDueDate" text="Due Date" />
+            <TableColumn fx:id="colDaysDelayed" text="Days Delayed" />
+            <TableColumn fx:id="colEmail" text="Email" />
+            
          </columns>
       </TableView>
       <Label layoutX="30.0" layoutY="33.0" prefHeight="20.0" prefWidth="85.0" text="Search bar " textFill="WHITE">
