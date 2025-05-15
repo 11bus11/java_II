@@ -1,7 +1,6 @@
 package library;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -127,6 +126,26 @@ public class LoanController {
             alert("No items in the list."); return;
         }
 
+        // --- NEW LOGIC MaxItemsByUserType ---
+        int userID = App.isLoggedIn.getUserID();
+        long currentlyLoaned = LoanCopy.arrayLoanCopiesGlobal.stream()
+            .filter(lc -> {
+                Loan loan = Loan.arrayLoansGlobal.stream()
+                    .filter(l -> l.getLoanID() == lc.getLoanID())
+                    .findFirst().orElse(null);
+                return loan != null && loan.getUser().getUserID() == userID && !lc.isReturned();
+            })
+            .count();
+
+        int maxAllowed = getMaxItemsByUserType(App.isLoggedIn.getUserType());
+        int totalAfterLoan = (int)currentlyLoaned + selectedCopies.size();
+
+        if (totalAfterLoan > maxAllowed) {
+            alert("You can only loan up to " + maxAllowed + " items at the same time.\nCurrently loaned: " + currentlyLoaned + ", trying to loan: " + selectedCopies.size());
+            return;
+        }
+        // --- NEW LOGIC MaxItemsByUserType ---
+
         /* update status in DB first */
         for(Copy c : selectedCopies){
             if(!CRUD.updateCopyStatus(c.getCopyID(),"loaned")){
@@ -158,24 +177,15 @@ public class LoanController {
         new Alert(Alert.AlertType.ERROR,m,ButtonType.OK).showAndWait();
     }
 
-    private int getLoanDaysByUserType(String userType) {
-        if (userType == null) return 4;
+    private int getMaxItemsByUserType(String userType) {
+        if (userType == null) return 3;
         switch (userType.toLowerCase()) {
-            case "student":
-                return 4;
-            case "faculty":
-                return 6;
-            case "researcher":
-                return 7;
-            case "public":
-                return 8;
-            default:
-                return 4;
+            case "student":     return 5;
+            case "faculty":     return 10;
+            case "researcher":  return 15;
+            case "public":      return 3;
+            default:            return 3;
         }
     }
-
-    private LocalDate calculateDueDate(User user) {
-        int days = getLoanDaysByUserType(user.getUserType());
-        return LocalDate.now().plusDays(days); // Usa local data //huh?
-    }
+    
 }
