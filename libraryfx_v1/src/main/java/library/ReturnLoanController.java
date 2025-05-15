@@ -1,17 +1,53 @@
 
 package library;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 public class ReturnLoanController {
-
+    /* ---------- INIT ---------- */
     @FXML
-    private Button btnDelete;
+    private void initialize(){
+
+        colBarcode .setCellValueFactory(new PropertyValueFactory<>("barcode"));
+        colTitle   .setCellValueFactory(new PropertyValueFactory<>("title"));
+        colAuthor  .setCellValueFactory(new PropertyValueFactory<>("author"));
+        colISBN    .setCellValueFactory(new PropertyValueFactory<>("isbn"));
+        colWorkType.setCellValueFactory(new PropertyValueFactory<>("workType"));
+        colStatus  .setCellValueFactory(new PropertyValueFactory<>("status"));
+
+        tvWork.setItems(data);
+        tvWork.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        tfBarcode.setOnKeyPressed(this::enterSearch);
+    }
+
+    /* ---------- in-memory list of copies selected for this loan ---------- */
+    private final ObservableList<CopyForTable> data          = FXCollections.observableArrayList();
+    private final List<Copy>                   selectedCopies = new ArrayList<>();
+
+    /* ---------- UI ---------- */
+    @FXML private TextField tfBarcode;
+    @FXML private Button    btnDelete;
+    @FXML private TableView<CopyForTable> tvWork;
+    @FXML private TableColumn<CopyForTable,String> colBarcode,colTitle,colAuthor,
+                                                   colISBN,colWorkType,colStatus;
+
 
     @FXML
     private Button btnHome;
@@ -24,30 +60,6 @@ public class ReturnLoanController {
 
     @FXML
     private Button btnReturnLoan;
-
-    @FXML
-    private TableColumn<?, ?> colAuthor;
-
-    @FXML
-    private TableColumn<?, ?> colBarcode;
-
-    @FXML
-    private TableColumn<?, ?> colISBN;
-
-    @FXML
-    private TableColumn<?, ?> colStatus;
-
-    @FXML
-    private TableColumn<?, ?> colTitle;
-
-    @FXML
-    private TableColumn<?, ?> colWorkType;
-
-    @FXML
-    private TextField tfBarcode;
-
-    @FXML
-    private TableView<?> tvWork;
 
     @FXML
     void goToHome(MouseEvent event) {
@@ -71,12 +83,61 @@ public class ReturnLoanController {
 
     @FXML
     void handleInsert(MouseEvent event) {
+        addByBarcode(); }
+        
+    private void enterSearch(KeyEvent e){ if(e.getCode()==KeyCode.ENTER) addByBarcode(); }
 
+    private void addByBarcode(){
+
+        String bc = tfBarcode.getText().trim();
+        if(bc.isBlank()) return;
+
+        /* find copy in global cache */
+        Copy copy = Copy.arrayCopiesGlobal.stream()
+                        .filter(c -> c.getBarcode().equals(bc))
+                        .findFirst().orElse(null);
+
+        if(copy == null){
+            alert("Barcode not found.");
+            return;
+        }
+        if(!Objects.equals(copy.getCopyStatus(),"loaned")){
+            alert("Copy is not loaned out.");
+            return;
+        }
+        if(selectedCopies.contains(copy)){
+            alert("Copy already in the list.");
+            return;
+        }
+
+        /* add to local lists */
+        selectedCopies.add(copy);
+        Work   w = copy.getWork();
+        Author a = w!=null ? w.getAuthor() : null;
+
+        data.add(new CopyForTable(
+                copy.getBarcode(),
+                w!=null ? w.getTitle() : "",
+                a!=null ? a.getFirstName()+" "+a.getLastName() : "",
+                w!=null ? w.getIsbn()  : "",
+                w!=null ? w.getType()  : "",
+                copy.getCopyStatus()));
+
+        tfBarcode.clear();
     }
+    
+
 
     @FXML
     void handleReturnLoan(MouseEvent event) {
 
     }
+
+    /* ---------- helper ---------- */
+    private void alert(String m){
+        new Alert(Alert.AlertType.ERROR,m,ButtonType.OK).showAndWait();
+    }
+
+    
 
 }

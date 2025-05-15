@@ -54,4 +54,8 @@ public class LoanUtil {
             ex.printStackTrace();
         }
     }
+
+    public static void registerUpdate(Copy copy) {
+        
+    }
 }
