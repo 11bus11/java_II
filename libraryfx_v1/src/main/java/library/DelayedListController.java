@@ -89,6 +89,11 @@ public class DelayedListController implements Initializable {
                 int allowedDays = getAllowedDaysByWorkType(workType);
                 LocalDate dueDate = borrowDate.plusDays(allowedDays);
 
+                int daysDelayed = LoanUtil.getDaysOverdue(borrowDate, workType);
+                if (daysDelayed > 0) {
+                    // Its delayed
+                }
+
                 if (LocalDate.now().isAfter(dueDate)) {
                     User u = loan.getUser();
                     String userName = u != null ? u.getFirstName() + " " + u.getLastName()

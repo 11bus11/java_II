@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -57,5 +58,29 @@ public class LoanUtil {
 
     public static void registerUpdate(Copy copy) {
         
+    }
+
+    /**
+     * Returns the number of days overdue for a given borrow date and work type.
+     * If not overdue, returns 0.
+     */
+    public static int getDaysOverdue(LocalDate borrowDate, String workType) {
+        int allowedDays = getAllowedDaysByWorkType(workType);
+        LocalDate dueDate = borrowDate.plusDays(allowedDays);
+        long daysOverdue = ChronoUnit.DAYS.between(dueDate, LocalDate.now());
+        return daysOverdue > 0 ? (int) daysOverdue : 0;
+    }
+
+    /**
+     * Returns the allowed days for a work type.
+     */
+    public static int getAllowedDaysByWorkType(String workType) {
+        if (workType == null) return 30;
+        switch (workType.toLowerCase()) {
+            case "other literature":  return 30;
+            case "course literature": return 14;
+            case "movie":             return 7;
+            default:                  return 30;
+        }
     }
 }
