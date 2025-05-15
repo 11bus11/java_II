@@ -176,6 +176,6 @@ public class LoanController {
 
     private LocalDate calculateDueDate(User user) {
         int days = getLoanDaysByUserType(user.getUserType());
-        return LocalDate.now().plusDays(days); // Usa local data
+        return LocalDate.now().plusDays(days); // Usa local data //huh?
     }
 }

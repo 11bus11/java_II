@@ -130,8 +130,28 @@ public class ReturnLoanController {
 
     @FXML
     void handleReturnLoan(MouseEvent event) {
+        if(selectedCopies.isEmpty()){
+            alert("No items in the list."); return;
+        }
 
+        /* update status in DB first */
+        for(Copy c : selectedCopies){
+            if(!CRUD.updateCopyStatus(c.getCopyID(),"available")){
+                alert("Database update failed for "+c.getBarcode());
+                return;
+            }
+        }
+
+        //update loancopy too
+
+        /* update status in memory */
+        selectedCopies.forEach(c -> c.setCopyStatus("available"));
+
+        /* clear view + local lists */
+        data.clear();
+        selectedCopies.clear();
     }
+    
 
     /* ---------- helper ---------- */
     private void alert(String m){
