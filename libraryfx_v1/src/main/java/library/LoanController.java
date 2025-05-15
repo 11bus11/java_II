@@ -1,5 +1,6 @@
 package library;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +64,7 @@ public class LoanController {
     @FXML private void handleSearch(ActionEvent e){ addByBarcode(); }
     private void enterSearch(KeyEvent e){ if(e.getCode()==KeyCode.ENTER) addByBarcode(); }
 
-    private void addByBarcode(){
+    public void addByBarcode(){
 
         String bc = tfBarcode.getText().trim();
         if(bc.isBlank()) return;
@@ -147,7 +148,9 @@ public class LoanController {
 
     /* ---------- NAVIGATION STUBS ---------- */
     @FXML public void goToHome      (MouseEvent e){}
-    @FXML public void goToReturnLoan(MouseEvent e){}
+    @FXML public void goToReturnLoan(MouseEvent e)  throws IOException {
+        App.setRoot("ReturnLoanController");
+    }
     @FXML public void goToMyLoans   (MouseEvent e){}
 
     /* ---------- helper ---------- */
@@ -173,6 +176,6 @@ public class LoanController {
 
     private LocalDate calculateDueDate(User user) {
         int days = getLoanDaysByUserType(user.getUserType());
-        return LocalDate.now().plusDays(days); // Usa local data
+        return LocalDate.now().plusDays(days); // Usa local data //huh?
     }
 }
