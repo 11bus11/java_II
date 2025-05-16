@@ -158,6 +158,6 @@ public class DelayedListController implements Initializable {
         public String getDaysDelayed() { return daysDelayed; }
     }
 
-    // No controller associado ao DelayedListcontroller.fxml
+    
     
 }
