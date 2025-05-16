@@ -154,7 +154,8 @@ public class ReturnLoanController {
         selectedCopies.forEach(c -> c.setCopyStatus("available"));
 
         /* update the list for receipt */
-        Loan.forReturnReceipt = selectedCopies;
+        selectedCopies.forEach(c -> Loan.forReturnReceipt.add(c));
+        
 
         /* clear view + local lists */
         data.clear();
