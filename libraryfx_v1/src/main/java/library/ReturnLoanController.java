@@ -1,6 +1,7 @@
 
 package library;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -8,6 +9,7 @@ import java.util.Objects;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -62,8 +64,8 @@ public class ReturnLoanController {
     private Button btnReturnLoan;
 
     @FXML
-    void goToHome(MouseEvent event) {
-
+    void goToHome(MouseEvent event) throws IOException{
+        App.setRoot("Home");
     }
 
     @FXML
@@ -72,8 +74,8 @@ public class ReturnLoanController {
     }
 
     @FXML
-    void goToMyLoans(MouseEvent event) {
-
+    void goToReceiptController(MouseEvent event) throws IOException{
+        App.setRoot("ReceiptController");
     }
 
     @FXML
@@ -129,7 +131,7 @@ public class ReturnLoanController {
 
 
     @FXML
-    void handleReturnLoan(MouseEvent event) {
+    void handleReturnLoan(MouseEvent event)  throws IOException{
         if(selectedCopies.isEmpty()){
             alert("No items in the list."); return;
         }
@@ -140,6 +142,10 @@ public class ReturnLoanController {
                 alert("Database update failed for "+c.getBarcode());
                 return;
             }
+            if (!CRUD.updateIsReturned(c.getCopyID())) {
+                alert("Database update failed for "+c.getBarcode());
+                return;
+            }
         }
 
         //update loancopy too
@@ -147,9 +153,15 @@ public class ReturnLoanController {
         /* update status in memory */
         selectedCopies.forEach(c -> c.setCopyStatus("available"));
 
+        /* update the list for receipt */
+        selectedCopies.forEach(c -> Loan.forReturnReceipt.add(c));
+        
+
         /* clear view + local lists */
         data.clear();
         selectedCopies.clear();
+        
+        App.setRoot("ReceiptController");
     }
     
 

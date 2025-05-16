@@ -51,6 +51,8 @@ public class LoanUtil {
             for(Copy c : copies)
                 LoanCopy.add(new LoanCopy(newLoan.getLoanID(), c.getCopyID(), false));
 
+            Loan.latestLoan = newLoan;
+
         }catch(Exception ex){
             ex.printStackTrace();
         }

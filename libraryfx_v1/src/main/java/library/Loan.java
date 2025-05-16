@@ -65,4 +65,8 @@ public class Loan {
         arrayLoansGlobal.add(l);
         return l;
     }
+
+    /* ---------- for the receipts ---------- */
+    static List<Copy> forReturnReceipt = new ArrayList<>();
+    static Loan latestLoan = null;
 }
