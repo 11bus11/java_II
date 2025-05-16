@@ -115,7 +115,7 @@ public class LoanController {
     }
 
     /* ---------- LOAN ---------- */
-    @FXML public void handleLoan(MouseEvent e){
+    @FXML public void handleLoan(MouseEvent e) throws IOException{
 
         if (App.isLoggedIn == null) {
             alert("Is logged is false.");
@@ -163,6 +163,8 @@ public class LoanController {
         /* clear view + local lists */
         data.clear();
         selectedCopies.clear();
+
+        App.setRoot("ReceiptController");
     }
 
     /* ---------- NAVIGATION STUBS ---------- */

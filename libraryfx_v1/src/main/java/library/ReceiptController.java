@@ -1,6 +1,7 @@
 
 package library;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javafx.collections.FXCollections;
@@ -35,8 +36,9 @@ public class ReceiptController {
         colType.setCellValueFactory(new PropertyValueFactory<>("type"));
 
         tvWork.setItems(data);
+        tvWork.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-        if (Loan.forReturnReceipt == null) {
+        if (Loan.forReturnReceipt.size() == 0) {
             loanReceipt();
         } else {
             returnReceipt();
@@ -46,21 +48,36 @@ public class ReceiptController {
     private final ObservableList<CopyForTable> data = FXCollections.observableArrayList();
 
     private void loanReceipt() {
-        lblLoanDate.setText("Loan date: " );
+        data.clear();
+        lblLoanDate.setText("Loan date: " + Loan.latestLoan.getLoanDate());
+        List<Copy> copies = Loan.latestLoan.getCopies();
+        System.out.println(copies);
+
+        int i = 0;
+        while (copies.size() > i) {
+            data.add(createCopyForTable(copies.get(i), copies.get(i).getWork()));
+            i++;
+        } 
+        System.out.println(data + " data");
+        copies.clear();
+        Loan.latestLoan = null;
+        
 
     }
 
     private void returnReceipt() {
-        lblLoanDate.setText("Return date: " );
+        data.clear();
+        lblLoanDate.setText("Return date: " + LocalDateTime.now());
+        System.out.println(Loan.forReturnReceipt);
 
         int i = 0;
         while (Loan.forReturnReceipt.size() > i) {
             data.add(createCopyForTable(Loan.forReturnReceipt.get(i), Loan.forReturnReceipt.get(i).getWork()));
             i++;
         } 
+        System.out.println(data + " data");
 
-        Loan.forReturnReceipt = null;
-        
+        Loan.forReturnReceipt.clear();
     }
 
     private CopyForTable createCopyForTable(Copy c, Work w) {
@@ -71,6 +88,7 @@ public class ReceiptController {
                 w!=null ? w.getIsbn()  : "",
                 w!=null ? w.getType()  : "",
                 c.getCopyStatus());
+        System.out.println(cft.getBarcode() + " barcode");
 
         return cft;
     }
