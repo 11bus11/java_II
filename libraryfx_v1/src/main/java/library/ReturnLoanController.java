@@ -142,6 +142,10 @@ public class ReturnLoanController {
                 alert("Database update failed for "+c.getBarcode());
                 return;
             }
+            if (!CRUD.updateIsReturned(c.getCopyID())) {
+                alert("Database update failed for "+c.getBarcode());
+                return;
+            }
         }
 
         //update loancopy too
