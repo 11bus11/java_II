@@ -42,4 +42,5 @@ public class CopyEntry {
      public StringProperty isbnProperty() {
         return isbn;
     }
+     public StringProperty authorProperty() { return author; }
 }
