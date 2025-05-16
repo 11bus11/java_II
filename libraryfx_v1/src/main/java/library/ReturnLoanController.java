@@ -64,8 +64,8 @@ public class ReturnLoanController {
     private Button btnReturnLoan;
 
     @FXML
-    void goToHome(MouseEvent event) {
-
+    void goToHome(MouseEvent event) throws IOException{
+        App.setRoot("Home");
     }
 
     @FXML
@@ -131,7 +131,7 @@ public class ReturnLoanController {
 
 
     @FXML
-    void handleReturnLoan(MouseEvent event) {
+    void handleReturnLoan(MouseEvent event)  throws IOException{
         if(selectedCopies.isEmpty()){
             alert("No items in the list."); return;
         }
@@ -149,10 +149,14 @@ public class ReturnLoanController {
         /* update status in memory */
         selectedCopies.forEach(c -> c.setCopyStatus("available"));
 
+        /* update the list for receipt */
+        Loan.forReturnReceipt = selectedCopies;
+
         /* clear view + local lists */
         data.clear();
         selectedCopies.clear();
-
+        
+        App.setRoot("ReceiptController");
     }
     
 
