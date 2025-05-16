@@ -231,15 +231,17 @@ public class CRUD {
 
             
             int authorId;
-            if(oldA!=null && oldA.getFirstName().equals(newFN) && oldA.getLastName().equals(newLN)){
-                authorId=oldA.getAuthorID();
+            if(oldA != null && (!oldA.getFirstName().equals(newFN) || !oldA.getLastName().equals(newLN))) {
+                // Atualiza o autor existente
+                authorId = oldA.getAuthorID();
                 try(PreparedStatement ps=conn.prepareStatement(
                     "UPDATE Author SET FirstName=?,LastName=? WHERE AuthorID=?")){
                     ps.setString(1,newFN);ps.setString(2,newLN);ps.setInt(3,authorId);
                     ps.executeUpdate();
                 }
-            }else{
-                
+            } else {
+                authorId = oldA != null ? oldA.getAuthorID() : -1;
+                // ...busca ou insere novo autor e atualiza WorkAuthor...
                 try(PreparedStatement ps=conn.prepareStatement(
                     "SELECT AuthorID FROM Author WHERE FirstName=? AND LastName=?")){
                     ps.setString(1,newFN);ps.setString(2,newLN);

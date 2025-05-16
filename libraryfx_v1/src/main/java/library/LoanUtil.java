@@ -3,8 +3,11 @@ package library;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -29,7 +32,11 @@ public class LoanUtil {
             int loanID;
             try(PreparedStatement ps = conn.prepareStatement(SQL_LOAN, Statement.RETURN_GENERATED_KEYS)){
                 ps.setInt(1, user.getUserID());
-                ps.setDate(2, java.sql.Date.valueOf(LocalDate.now()));
+                
+                ZoneId stockholm = ZoneId.of("Europe/Stockholm");
+                ZonedDateTime nowStockholm = ZonedDateTime.now(stockholm);
+                ps.setTimestamp(2, Timestamp.valueOf(nowStockholm.toLocalDateTime()));
+                
                 ps.executeUpdate();
                 var rs = ps.getGeneratedKeys(); rs.next();
                 loanID = rs.getInt(1);
