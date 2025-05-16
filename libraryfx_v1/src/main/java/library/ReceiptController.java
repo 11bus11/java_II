@@ -1,6 +1,7 @@
 
 package library;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,9 +19,9 @@ import javafx.scene.control.SelectionMode;
 public class ReceiptController {
 
     @FXML private Button btnReturn;
-    @FXML private TableColumn<CopyForTable,String>  colBarcode, colDueDate, colTitle,
+    @FXML private TableColumn<CopyForReceiptTable,String>  colBarcode, colDueDate, colTitle,
                                                     colType;
-    @FXML private TableView<CopyForTable> tvWork;
+    @FXML private TableView<CopyForReceiptTable> tvWork;
     @FXML private Label lblLoanDate;
 
     @FXML
@@ -31,8 +32,8 @@ public class ReceiptController {
     @FXML
     private void initialize() {
         colBarcode .setCellValueFactory(new PropertyValueFactory<>("barcode"));
-        colTitle   .setCellValueFactory(new PropertyValueFactory<>("title"));
-        colDueDate  .setCellValueFactory(new PropertyValueFactory<>("dueDate"));
+        colTitle   .setCellValueFactory(new PropertyValueFactory<>("dueDate"));
+        colDueDate  .setCellValueFactory(new PropertyValueFactory<>("title"));
         colType.setCellValueFactory(new PropertyValueFactory<>("type"));
 
         tvWork.setItems(data);
@@ -45,7 +46,7 @@ public class ReceiptController {
         }
     }
 
-    private final ObservableList<CopyForTable> data = FXCollections.observableArrayList();
+    private final ObservableList<CopyForReceiptTable> data = FXCollections.observableArrayList();
 
     private void loanReceipt() {
         data.clear();
@@ -72,7 +73,8 @@ public class ReceiptController {
 
         int i = 0;
         while (Loan.forReturnReceipt.size() > i) {
-            data.add(createCopyForTable(Loan.forReturnReceipt.get(i), Loan.forReturnReceipt.get(i).getWork()));
+            Copy copy = Loan.forReturnReceipt.get(i);
+            data.add(createCopyForTable(copy, copy.getWork()));
             i++;
         } 
         System.out.println(data + " data");
@@ -80,14 +82,18 @@ public class ReceiptController {
         Loan.forReturnReceipt.clear();
     }
 
-    private CopyForTable createCopyForTable(Copy c, Work w) {
-        CopyForTable cft = new CopyForTable(
+    private CopyForReceiptTable createCopyForTable(Copy c, Work w) {
+        String dueDate = null;
+        if (Loan.forReturnReceipt.size() == 0) {
+            dueDate = LoanUtil.getDueDate(LocalDate.now(), w.getType()).toString();
+        }
+        System.out.println(w.getType());
+        CopyForReceiptTable cft = new CopyForReceiptTable(
                 c.getBarcode(),
                 w!=null ? w.getTitle() : "",
-                null,
-                w!=null ? w.getIsbn()  : "",
-                w!=null ? w.getType()  : "",
-                c.getCopyStatus());
+                dueDate,
+                w.getType()
+                );
         System.out.println(cft.getBarcode() + " barcode");
 
         return cft;
