@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -84,5 +85,12 @@ public class LoanUtil {
             case "movie":             return 7;
             default:                  return 30;
         }
+    }
+
+    public static LocalDate getDueDate(LocalDate borrowDate, String workType) {
+        int allowedDays = getAllowedDaysByWorkType(workType);
+        LocalDate dueDate = borrowDate.plusDays(allowedDays);
+
+        return dueDate;
     }
 }
