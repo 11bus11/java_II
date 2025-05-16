@@ -48,6 +48,7 @@ public class ReceiptController {
     private final ObservableList<CopyForTable> data = FXCollections.observableArrayList();
 
     private void loanReceipt() {
+        data.clear();
         lblLoanDate.setText("Loan date: " + Loan.latestLoan.getLoanDate());
         List<Copy> copies = Loan.latestLoan.getCopies();
         System.out.println(copies);
@@ -60,11 +61,12 @@ public class ReceiptController {
         System.out.println(data + " data");
         copies.clear();
         Loan.latestLoan = null;
-        data.clear();
+        
 
     }
 
     private void returnReceipt() {
+        data.clear();
         lblLoanDate.setText("Return date: " + LocalDateTime.now());
         System.out.println(Loan.forReturnReceipt);
 
@@ -76,8 +78,6 @@ public class ReceiptController {
         System.out.println(data + " data");
 
         Loan.forReturnReceipt.clear();
-        data.clear();
-        
     }
 
     private CopyForTable createCopyForTable(Copy c, Work w) {
