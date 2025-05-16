@@ -57,6 +57,7 @@ public class ReceiptController {
             data.add(createCopyForTable(copies.get(i), copies.get(i).getWork()));
             i++;
         } 
+        System.out.println(data + " data");
         copies.clear();
         Loan.latestLoan = null;
         data.clear();
