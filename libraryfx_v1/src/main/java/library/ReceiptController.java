@@ -1,6 +1,7 @@
 
 package library;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javafx.collections.FXCollections;
@@ -51,7 +52,8 @@ public class ReceiptController {
     }
 
     private void returnReceipt() {
-        lblLoanDate.setText("Return date: " );
+        lblLoanDate.setText("Return date: " + LocalDateTime.now());
+        System.out.println(Loan.forReturnReceipt);
 
         int i = 0;
         while (Loan.forReturnReceipt.size() > i) {
