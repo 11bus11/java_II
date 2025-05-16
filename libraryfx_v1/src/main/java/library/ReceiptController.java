@@ -36,8 +36,9 @@ public class ReceiptController {
         colType.setCellValueFactory(new PropertyValueFactory<>("type"));
 
         tvWork.setItems(data);
+        tvWork.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-        if (Loan.forReturnReceipt == null) {
+        if (Loan.forReturnReceipt.size() == 0) {
             loanReceipt();
         } else {
             returnReceipt();
@@ -47,7 +48,18 @@ public class ReceiptController {
     private final ObservableList<CopyForTable> data = FXCollections.observableArrayList();
 
     private void loanReceipt() {
-        lblLoanDate.setText("Loan date: " );
+        lblLoanDate.setText("Loan date: " + Loan.latestLoan.getLoanDate());
+        List<Copy> copies = Loan.latestLoan.getCopies();
+        System.out.println(copies);
+
+        int i = 0;
+        while (copies.size() > i) {
+            data.add(createCopyForTable(copies.get(i), copies.get(i).getWork()));
+            i++;
+        } 
+        copies.clear();
+        Loan.latestLoan = null;
+        data.clear();
 
     }
 
@@ -60,8 +72,10 @@ public class ReceiptController {
             data.add(createCopyForTable(Loan.forReturnReceipt.get(i), Loan.forReturnReceipt.get(i).getWork()));
             i++;
         } 
+        System.out.println(data + " data");
 
-        Loan.forReturnReceipt = null;
+        Loan.forReturnReceipt.clear();
+        data.clear();
         
     }
 
@@ -73,6 +87,7 @@ public class ReceiptController {
                 w!=null ? w.getIsbn()  : "",
                 w!=null ? w.getType()  : "",
                 c.getCopyStatus());
+        System.out.println(cft.getBarcode() + " barcode");
 
         return cft;
     }

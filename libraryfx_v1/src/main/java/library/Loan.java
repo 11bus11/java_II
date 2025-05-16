@@ -66,6 +66,7 @@ public class Loan {
         return l;
     }
 
-    /* ---------- list for the receipt ---------- */
+    /* ---------- for the receipts ---------- */
     static List<Copy> forReturnReceipt = new ArrayList<>();
+    static Loan latestLoan = null;
 }
