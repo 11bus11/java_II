@@ -372,4 +372,19 @@ public class CRUD {
         }
     }
 
+    public static boolean updateIsReturned(int copyID){
+        final String SQL = "UPDATE LoanCopy SET IsReturned = true WHERE CopyID = ?";
+
+        try (Connection conn = DbUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(SQL)) {
+
+            ps.setInt   (1, copyID);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

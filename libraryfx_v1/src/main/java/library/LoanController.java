@@ -170,7 +170,7 @@ public class LoanController {
     @FXML public void goToReturnLoan(MouseEvent e)  throws IOException {
         App.setRoot("ReturnLoanController");
     }
-    @FXML public void goToMyLoans   (MouseEvent e){}
+    //@FXML public void goToMyLoans   (MouseEvent e){}
 
     /* ---------- helper ---------- */
     private void alert(String m){

@@ -55,11 +55,7 @@
                   <Font name="System Bold" size="12.0" />
                </font>
             </Button>
-            <Button fx:id="btnMyLoans" mnemonicParsing="false" onMouseClicked="#goToMyLoans" prefHeight="190.0" prefWidth="130.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2px 0px;" text="My Loans" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Button>
+            
          </children>
       </VBox>
       <TextField fx:id="tfBarcode" layoutX="312.0" layoutY="34.0" prefHeight="26.0" prefWidth="586.0" />

@@ -9,7 +9,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="918.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.ReceiptController">
    <children>
-      <TableView layoutX="73.0" layoutY="97.0" prefHeight="407.0" prefWidth="772.0">
+      <TableView fx:id="tvWork" layoutX="73.0" layoutY="97.0" prefHeight="407.0" prefWidth="772.0">
          <columns>
             <TableColumn fx:id="colBarcode" prefWidth="167.0" text="Barcode" />
             <TableColumn fx:id="colType" prefWidth="94.0" text="Type" />
