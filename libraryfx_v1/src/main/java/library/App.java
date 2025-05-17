@@ -18,7 +18,7 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         stage = primaryStage;
-        Parent root = loadFXML("ReturnLoanController");          
+        Parent root = loadFXML("StaffController");          
         scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Library");
@@ -48,7 +48,7 @@ public class App extends Application {
         //kontrollerar att listan inte är tom, så att om den är det(inga användare laddades) kastar det INTE en indexOutOfBoundexception och kraschar programmet.
         if (!User.arrayUsersGlobal.isEmpty())
         //Gör till kommentar om Log in ska fungera
-            isLoggedIn = User.arrayUsersGlobal.get(0);   
+//isLoggedIn = User.arrayUsersGlobal.get(0);   
 
         launch();
     }

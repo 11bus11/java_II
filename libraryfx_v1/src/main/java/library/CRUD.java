@@ -100,17 +100,18 @@ public class CRUD {
     private void loadData(){
         data.clear();
         for(Copy c:Copy.arrayCopiesGlobal){
-            Work w=c.getWork();
-            String author = (w!=null && w.getAuthor()!=null)
-                ? w.getAuthor().getFirstName()+" "+w.getAuthor().getLastName()
+            Work w = c.getWork();
+            String author = (w != null && w.getAuthor() != null)
+                ? w.getAuthor().getFirstName() + " " + w.getAuthor().getLastName()
                 : "";
             data.add(new CopyEntry(
                 c.getBarcode(),
-                w!=null?w.getTitle():"",
+                w != null ? w.getTitle() : "",
                 author,
-                w!=null?w.getIsbn():"",
-                w!=null?w.getType():"",
-                c.getCopyPlacement()));
+                w != null ? w.getIsbn() : "",
+                w != null ? w.getType() : "",
+                c.getCopyPlacement()
+            ));
         }
     }
 
@@ -327,7 +328,11 @@ public class CRUD {
 
     //Return
     @FXML private void handleReturn(MouseEvent ev){
-        ((Button)ev.getSource()).getScene().getWindow().hide();
+        try {
+            App.setRoot("StaffController");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //Helpers
