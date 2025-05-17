@@ -28,6 +28,11 @@
                   <Font name="System Bold" size="12.0" />
                </font>
             </Button>
+            <Button fx:id="btnLogout" mnemonicParsing="false" onMouseClicked="#goToHomeLogout" prefHeight="144.0" prefWidth="142.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2px 0px;" text="Logout" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
          </children>
       </VBox>
    </left>
