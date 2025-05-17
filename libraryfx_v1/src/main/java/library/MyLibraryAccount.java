@@ -21,6 +21,9 @@ public class MyLibraryAccount {
     private Button btnReturnLoan;
 
     @FXML
+    private Button btnLogout;
+
+    @FXML
     void goToHome(MouseEvent event) throws IOException {
         App.setRoot("Home");
     }
@@ -30,10 +33,14 @@ public class MyLibraryAccount {
         App.setRoot("LoanController");
     }
 
-
     @FXML
     void goToReturnLoan(MouseEvent event) throws IOException {
         App.setRoot("ReturnLoanController");
     }
 
+    @FXML
+    void goToHomeLogout(MouseEvent event) throws IOException {
+        App.isLoggedIn = null;
+        App.setRoot("Home");
+    }
 }
