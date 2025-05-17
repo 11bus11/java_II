@@ -34,7 +34,7 @@
 
         <!-- Search Field -->
         <TextField fx:id="tfBarcode" layoutX="312.0" layoutY="34.0" prefHeight="26.0" prefWidth="512.0"/>
-        <Button layoutX="830.0" layoutY="34.0" mnemonicParsing="false" onAction="#handleSearch" prefHeight="26.0" prefWidth="76.0" text="Search"/>
+        <Button layoutX="830.0" layoutY="34.0" mnemonicParsing="false" onAction="#handleSearch" prefHeight="26.0" prefWidth="76.0" text="Add"/>
 
         <!-- TableView -->
         <TableView fx:id="tvWork" layoutX="146.0" layoutY="80.0" prefHeight="400.0" prefWidth="756.0">
