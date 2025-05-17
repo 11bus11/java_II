@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;          // ★ novo import
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +33,7 @@ public class Loan {
                        .getOrDefault(loanID, List.of())
                        .stream()
                        .map(LoanCopy::getCopy)
-                       .collect(Collectors.toList());   // ★ here
+                       .collect(Collectors.toList());
     }
 
     /* ---------- initial cache ---------- */

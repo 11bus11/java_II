@@ -57,7 +57,7 @@ public class Work {
              ResultSet rs = c.createStatement().executeQuery("SELECT * FROM Work")) {
             while (rs.next()) {
                 int workId = rs.getInt("WorkID");
-                // Buscar o AuthorID na tabela de relação WorkAuthor
+                // Find AuthorID in WorkAuthor table
                 int authorId = -1;
                 try (PreparedStatement ps = c.prepareStatement("SELECT AuthorID FROM WorkAuthor WHERE WorkID = ?")) {
                     ps.setInt(1, workId);
@@ -66,7 +66,7 @@ public class Work {
                         authorId = ars.getInt("AuthorID");
                     }
                 }
-                // Buscar o objeto Author correspondente
+                // Find the corresponding Author object
                 Author author = null;
                 if (authorId != -1) {
                     for (Author a : Author.arrayAuthorsGlobal) {
@@ -76,7 +76,6 @@ public class Work {
                         }
                     }
                 }
-                // (debug removido)
                 list.add(new Work(
                     workId,
                     rs.getString("WorkTitle"),
