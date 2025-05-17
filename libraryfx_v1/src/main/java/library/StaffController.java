@@ -21,22 +21,38 @@ public class StaffController {
 
     @FXML
     void goToCRUD(MouseEvent event) {
-
+        try {
+            App.setRoot("CRUD");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     void goToDelayedLoans(MouseEvent event) {
-
+        try {
+            App.setRoot("DelayedListController");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     void goToHome(MouseEvent event) {
-
+        try {
+            App.setRoot("Home");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     void goToMyLoans(MouseEvent event) {
-
+        try {
+            App.setRoot("MyLibraryAccount");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

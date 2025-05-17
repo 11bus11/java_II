@@ -39,7 +39,11 @@ public class DelayedListController implements Initializable {
     @FXML private TableColumn<OverdueEntry,String>  colEmail;
     @FXML private TableColumn<OverdueEntry,String>  colDaysDelayed;
     @FXML public void goToStaff(MouseEvent event) {
-        
+        try {
+            App.setRoot("StaffController");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private final ObservableList<OverdueEntry> data = FXCollections.observableArrayList();

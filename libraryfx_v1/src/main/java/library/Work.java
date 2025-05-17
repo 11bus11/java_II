@@ -1,6 +1,7 @@
 package library;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -51,18 +52,38 @@ public class Work {
     
     public static ArrayList<Work> createWorks() {
         ArrayList<Work> list = new ArrayList<>();
-        DataSource ds = DbUtil.createDataSource();      
+        DataSource ds = DbUtil.createDataSource();
         try (Connection c = ds.getConnection();
              ResultSet rs = c.createStatement().executeQuery("SELECT * FROM Work")) {
             while (rs.next()) {
+                int workId = rs.getInt("WorkID");
+                // Find AuthorID in WorkAuthor table
+                int authorId = -1;
+                try (PreparedStatement ps = c.prepareStatement("SELECT AuthorID FROM WorkAuthor WHERE WorkID = ?")) {
+                    ps.setInt(1, workId);
+                    ResultSet ars = ps.executeQuery();
+                    if (ars.next()) {
+                        authorId = ars.getInt("AuthorID");
+                    }
+                }
+                // Find the corresponding Author object
+                Author author = null;
+                if (authorId != -1) {
+                    for (Author a : Author.arrayAuthorsGlobal) {
+                        if (a.getAuthorID() == authorId) {
+                            author = a;
+                            break;
+                        }
+                    }
+                }
                 list.add(new Work(
-                    rs.getInt   ("WorkID"),
+                    workId,
                     rs.getString("WorkTitle"),
                     rs.getString("ISBN"),
                     rs.getString("WorkType"),
                     rs.getString("WorkDesc"),
-                    null,                                 
-                    rs.getInt   ("Year")
+                    author,
+                    rs.getInt("Year")
                 ));
             }
         } catch (SQLException e) { e.printStackTrace(); }
