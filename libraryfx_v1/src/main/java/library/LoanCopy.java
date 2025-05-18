@@ -71,4 +71,14 @@ public class LoanCopy {
         arrayLoanCopiesGlobal.add(lc);
         copiesByLoanID.computeIfAbsent(lc.loanID, k -> new ArrayList<>()).add(lc);
     }
+
+    public static void remove(Copy c){
+        for(LoanCopy lc : LoanCopy.arrayLoanCopiesGlobal) {
+            if (lc.copyID == c.getCopyID()) {
+                arrayLoanCopiesGlobal.remove(lc);
+            }
+            
+        }
+        
+    }
 }
