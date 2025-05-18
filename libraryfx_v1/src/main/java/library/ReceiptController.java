@@ -1,6 +1,7 @@
 
 package library;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 
@@ -25,8 +27,8 @@ public class ReceiptController {
     @FXML private Label lblLoanDate;
 
     @FXML
-    void goToHome(ActionEvent event) {
-
+    void goToHome(ActionEvent event) throws IOException{
+        App.setRoot("Home");
     }
 
     @FXML
