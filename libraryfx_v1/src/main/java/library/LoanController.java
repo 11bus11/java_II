@@ -168,7 +168,8 @@ public class LoanController {
     }
 
     /* ---------- NAVIGATION STUBS ---------- */
-    @FXML public void goToHome      (MouseEvent e){}
+    @FXML public void goToHome      (MouseEvent e) throws IOException {
+        App.setRoot("Home");}
     @FXML public void goToReturnLoan(MouseEvent e)  throws IOException {
         App.setRoot("ReturnLoanController");
     }

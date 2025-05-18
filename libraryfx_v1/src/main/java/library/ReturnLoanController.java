@@ -69,18 +69,13 @@ public class ReturnLoanController {
     }
 
     @FXML
-    void goToLoan(MouseEvent event) {
-
+    void goToLoan(MouseEvent event) throws IOException{
+        App.setRoot("LoanController");
     }
 
     @FXML
     void goToReceiptController(MouseEvent event) throws IOException{
         App.setRoot("ReceiptController");
-    }
-
-    @FXML
-    void handleDelete(MouseEvent event) {
-
     }
 
     @FXML
