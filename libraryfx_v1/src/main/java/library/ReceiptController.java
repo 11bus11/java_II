@@ -48,40 +48,41 @@ public class ReceiptController {
 
     private final ObservableList<CopyForReceiptTable> data = FXCollections.observableArrayList();
 
+    //receipt for loan
     private void loanReceipt() {
         data.clear();
         lblLoanDate.setText("Loan date: " + Loan.latestLoan.getLoanDate());
         List<Copy> copies = Loan.latestLoan.getCopies();
-        System.out.println(copies);
 
+        //add all copies to the table
         int i = 0;
         while (copies.size() > i) {
             data.add(createCopyForTable(copies.get(i), copies.get(i).getWork()));
             i++;
         } 
-        System.out.println(data + " data");
+
         copies.clear();
         Loan.latestLoan = null;
         
 
     }
 
+    //receipt for returns
     private void returnReceipt() {
         data.clear();
         lblLoanDate.setText("Return date: " + LocalDateTime.now());
-        System.out.println(Loan.forReturnReceipt);
 
+        //add all copies to the table
         int i = 0;
         while (Loan.forReturnReceipt.size() > i) {
             Copy copy = Loan.forReturnReceipt.get(i);
             data.add(createCopyForTable(copy, copy.getWork()));
             i++;
         } 
-        System.out.println(data + " data");
-
         Loan.forReturnReceipt.clear();
     }
 
+    //create an opject that can be added to the receipt-table
     private CopyForReceiptTable createCopyForTable(Copy c, Work w) {
         String dueDate = null;
         if (Loan.forReturnReceipt.size() == 0) {

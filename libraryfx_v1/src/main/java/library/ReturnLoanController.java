@@ -138,17 +138,17 @@ public class ReturnLoanController {
 
         /* update status in DB first */
         for(Copy c : selectedCopies){
+            //Copy
             if(!CRUD.updateCopyStatus(c.getCopyID(),"available")){
                 alert("Database update failed for "+c.getBarcode());
                 return;
             }
+            //LoanCopy
             if (!CRUD.updateIsReturned(c.getCopyID())) {
                 alert("Database update failed for "+c.getBarcode());
                 return;
             }
         }
-
-        //update loancopy too
 
         /* update status in memory */
         selectedCopies.forEach(c -> c.setCopyStatus("available"));
