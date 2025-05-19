@@ -102,18 +102,6 @@ public class LoanController {
         tfBarcode.clear();
     }
 
-    /* ---------- DELETE from list (no DB touch) ---------- */
-    @FXML public void handleDelete(MouseEvent e){
-
-        Set<String> barcodesToRemove = tvWork.getSelectionModel().getSelectedItems().stream()
-                                             .map(CopyForTable::getBarcode)
-                                             .collect(Collectors.toSet());
-        if(barcodesToRemove.isEmpty()) return;
-
-        data.removeIf(row -> barcodesToRemove.contains(row.getBarcode()));
-        selectedCopies.removeIf(c -> barcodesToRemove.contains(c.getBarcode()));
-    }
-
     /* ---------- LOAN ---------- */
     @FXML public void handleLoan(MouseEvent e) throws IOException{
 

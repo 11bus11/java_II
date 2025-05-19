@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -66,6 +65,7 @@ public class LoanUtil {
         }
     }
 
+    //?
     public static void registerUpdate(Copy copy) {
         
     }

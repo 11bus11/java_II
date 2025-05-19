@@ -46,7 +46,7 @@ public class App extends Application {
         Copy.arrayCopiesGlobal.size();     
 
         //kontrollerar att listan inte är tom, så att om den är det(inga användare laddades) kastar det INTE en indexOutOfBoundexception och kraschar programmet.
-        if (!User.arrayUsersGlobal.isEmpty())   
+        if (!User.arrayUsersGlobal.isEmpty())  
         launch();
     }
 }

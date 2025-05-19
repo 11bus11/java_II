@@ -60,7 +60,7 @@ public class DelayedListController implements Initializable {
         colEmail     .setCellValueFactory(new PropertyValueFactory<>("email"));
 
         // Automatic column resize
-        tvDelayed.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        tvDelayed.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);  //issue?
 
         loadOverdues();
         tvDelayed.setItems(data);
