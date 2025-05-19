@@ -81,6 +81,14 @@ public class LoanController {
             alert("Copy is not available.");
             return;
         }
+        if (copy.isReference()) {
+            alert("This copy cannot be borrowed.");
+            return;
+        }
+        if (copy.getWork().getType().equals("magazine")) {
+            alert("This copy cannot be borrowed.");
+            return;
+        }
         if(selectedCopies.contains(copy)){
             alert("Copy already in the list.");
             return;
