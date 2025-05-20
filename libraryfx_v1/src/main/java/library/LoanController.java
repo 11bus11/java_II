@@ -81,6 +81,14 @@ public class LoanController {
             alert("Copy is not available.");
             return;
         }
+        if (copy.isReference()) {
+            alert("This copy cannot be borrowed.");
+            return;
+        }
+        if (copy.getWork().getType().equals("magazine")) {
+            alert("This copy cannot be borrowed.");
+            return;
+        }
         if(selectedCopies.contains(copy)){
             alert("Copy already in the list.");
             return;
@@ -100,18 +108,6 @@ public class LoanController {
                 copy.getCopyStatus()));
 
         tfBarcode.clear();
-    }
-
-    /* ---------- DELETE from list (no DB touch) ---------- */
-    @FXML public void handleDelete(MouseEvent e){
-
-        Set<String> barcodesToRemove = tvWork.getSelectionModel().getSelectedItems().stream()
-                                             .map(CopyForTable::getBarcode)
-                                             .collect(Collectors.toSet());
-        if(barcodesToRemove.isEmpty()) return;
-
-        data.removeIf(row -> barcodesToRemove.contains(row.getBarcode()));
-        selectedCopies.removeIf(c -> barcodesToRemove.contains(c.getBarcode()));
     }
 
     /* ---------- LOAN ---------- */
@@ -168,7 +164,8 @@ public class LoanController {
     }
 
     /* ---------- NAVIGATION STUBS ---------- */
-    @FXML public void goToHome      (MouseEvent e){}
+    @FXML public void goToHome      (MouseEvent e) throws IOException {
+        App.setRoot("Home");}
     @FXML public void goToReturnLoan(MouseEvent e)  throws IOException {
         App.setRoot("ReturnLoanController");
     }

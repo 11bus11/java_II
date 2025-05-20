@@ -23,11 +23,7 @@
             <TableColumn fx:id="colStatus" prefWidth="114.4000244140625" text="Status" />
          </columns>
       </TableView>
-      <Button fx:id="btnInsert" layoutX="172.0" layoutY="95.0" mnemonicParsing="false" onMouseClicked="#handleInsert" prefHeight="26.0" prefWidth="76.0" text="Insert">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font>
-      </Button>
+      <Button fx:id="btnInsert" layoutX="830.0" layoutY="34.0" mnemonicParsing="false" onMouseClicked="#handleInsert" prefHeight="26.0" prefWidth="76.0" text="Add"/>
       <Button fx:id="btnReturnLoan" layoutX="769.0" layoutY="534.0" mnemonicParsing="false" onMouseClicked="#handleReturnLoan" prefHeight="37.0" prefWidth="110.0" text="Return Loan">
          <font>
             <Font name="System Bold" size="12.0" />
@@ -53,6 +49,6 @@
             
          </children>
       </VBox>
-      <TextField fx:id="tfBarcode" layoutX="312.0" layoutY="34.0" prefHeight="26.0" prefWidth="586.0" />
+      <TextField fx:id="tfBarcode" layoutX="312.0" layoutY="34.0" prefHeight="26.0" prefWidth="512.0" />
    </children>
 </AnchorPane>

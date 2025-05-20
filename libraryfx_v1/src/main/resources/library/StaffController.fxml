@@ -6,22 +6,27 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="918.0" style="-fx-background-color: #0A2F52;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="library.StaffController">
    <children>
-      <Button fx:id="btnCRUD" layoutX="68.0" layoutY="251.0" mnemonicParsing="false" onMouseClicked="#goToCRUD" prefHeight="80.0" prefWidth="166.0" text="CRUD">
+      <Button fx:id="btnCRUD" layoutX="68.0" layoutY="249.0" mnemonicParsing="false" onMouseClicked="#goToCRUD" prefHeight="86.0" prefWidth="166.0" text="CRUD">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="btnDelayedLoans" layoutX="336.0" layoutY="86.0" mnemonicParsing="false" onMouseClicked="#goToDelayedLoans" prefHeight="80.0" prefWidth="174.0" text="Delayed Loans">
+      <Button fx:id="btnDelayedLoans" layoutX="342.0" layoutY="86.0" mnemonicParsing="false" onMouseClicked="#goToDelayedLoans" prefHeight="86.0" prefWidth="166.0" text="Delayed Loans">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="btnMyLoans" layoutX="68.0" layoutY="86.0" mnemonicParsing="false" onMouseClicked="#goToMyLoans" prefHeight="80.0" prefWidth="166.0" text="My Loans">
+      <Button fx:id="btnMyLoans" layoutX="68.0" layoutY="86.0" mnemonicParsing="false" onMouseClicked="#goToMyLoans" prefHeight="86.0" prefWidth="166.0" text="My Loans">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
       <Button fx:id="btnHome" layoutX="342.0" layoutY="249.0" mnemonicParsing="false" onMouseClicked="#goToHome" prefHeight="86.0" prefWidth="166.0" text="Home">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
+      <Button fx:id="btnLogout" layoutX="630.0" layoutY="86.0" mnemonicParsing="false" onMouseClicked="#goToHomeLogout" prefHeight="86.0" prefWidth="166.0" text="Logout">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>

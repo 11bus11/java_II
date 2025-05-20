@@ -9,7 +9,6 @@ import java.util.Objects;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -69,18 +68,13 @@ public class ReturnLoanController {
     }
 
     @FXML
-    void goToLoan(MouseEvent event) {
-
+    void goToLoan(MouseEvent event) throws IOException{
+        App.setRoot("LoanController");
     }
 
     @FXML
     void goToReceiptController(MouseEvent event) throws IOException{
         App.setRoot("ReceiptController");
-    }
-
-    @FXML
-    void handleDelete(MouseEvent event) {
-
     }
 
     @FXML
@@ -138,17 +132,17 @@ public class ReturnLoanController {
 
         /* update status in DB first */
         for(Copy c : selectedCopies){
+            //Copy
             if(!CRUD.updateCopyStatus(c.getCopyID(),"available")){
                 alert("Database update failed for "+c.getBarcode());
                 return;
             }
+            //LoanCopy
             if (!CRUD.updateIsReturned(c.getCopyID())) {
                 alert("Database update failed for "+c.getBarcode());
                 return;
             }
         }
-
-        //update loancopy too
 
         /* update status in memory */
         selectedCopies.forEach(c -> c.setCopyStatus("available"));

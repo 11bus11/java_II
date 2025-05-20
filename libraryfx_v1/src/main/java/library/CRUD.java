@@ -316,13 +316,32 @@ public class CRUD {
         conf.setHeaderText(null); conf.showAndWait();
         if(conf.getResult()!=ButtonType.YES)return;
 
+        //finding the copy in memory
+        Copy selCopy = null;
+        for(Copy c : Copy.arrayCopiesGlobal) {
+            if (c.getBarcode().equals(sel.getBarcode())) {
+                selCopy = c;
+            }
+        }
+
+        //update database
         try(Connection conn=DbUtil.getConnection();
             PreparedStatement ps=conn.prepareStatement(
-                "DELETE FROM Copy WHERE CopyBarcode=?")){
-            ps.setString(1,sel.getBarcode()); ps.executeUpdate();
+                "Delete from LoanCopy where CopyID = ?");
+            PreparedStatement ps2=conn.prepareStatement(
+            "DELETE FROM Copy WHERE CopyBarcode=?")){
+            if (selCopy != null) {
+                ps.setInt(1,selCopy.getCopyID());
+            } else {
+                err("There is no such copy!");
+            }
+            ps2.setString(1,sel.getBarcode()); ps2.executeUpdate();
         }catch(SQLException e){e.printStackTrace();err(e.getMessage());return;}
 
+        //Update cache
+        LoanCopy.remove(selCopy);
         Copy.arrayCopiesGlobal.removeIf(c->c.getBarcode().equals(sel.getBarcode()));
+
         loadData();
     }
 
