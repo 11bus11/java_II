@@ -21,8 +21,7 @@ import javafx.scene.control.SelectionMode;
 public class ReceiptController {
 
     @FXML private Button btnReturn;
-    @FXML private TableColumn<CopyForReceiptTable,String>  colBarcode, colDueDate, colTitle,
-                                                    colType;
+    @FXML private TableColumn<CopyForReceiptTable,String>  colBarcode, colDueDate, colTitle;
     @FXML private TableView<CopyForReceiptTable> tvWork;
     @FXML private Label lblLoanDate;
 
@@ -36,7 +35,6 @@ public class ReceiptController {
         colBarcode .setCellValueFactory(new PropertyValueFactory<>("barcode"));
         colTitle   .setCellValueFactory(new PropertyValueFactory<>("dueDate"));
         colDueDate  .setCellValueFactory(new PropertyValueFactory<>("title"));
-        colType.setCellValueFactory(new PropertyValueFactory<>("type"));
 
         tvWork.setItems(data);
         tvWork.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -73,6 +71,7 @@ public class ReceiptController {
     private void returnReceipt() {
         data.clear();
         lblLoanDate.setText("Return date: " + LocalDateTime.now());
+        colDueDate.setText("");
 
         //add all copies to the table
         int i = 0;
@@ -90,12 +89,11 @@ public class ReceiptController {
         if (Loan.forReturnReceipt.size() == 0) {
             dueDate = LoanUtil.getDueDate(LocalDate.now(), w.getType()).toString();
         }
-        System.out.println(w.getType());
         CopyForReceiptTable cft = new CopyForReceiptTable(
                 c.getBarcode(),
                 w!=null ? w.getTitle() : "",
                 dueDate,
-                w.getType()
+                null
                 );
         System.out.println(cft.getBarcode() + " barcode");
 
